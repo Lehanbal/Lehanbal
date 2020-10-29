@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  <entry>
+    <title>线程安全和线程不安全</title>
+    <url>/2020/10/28/%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8%E5%92%8C%E7%BA%BF%E7%A8%8B%E4%B8%8D%E5%AE%89%E5%85%A8/</url>
+    <content><![CDATA[<p><strong>线程安全</strong>：就是多线程访问的时候，采用了加锁机制，当一个线程访问该类的某个数据时，进行保护，其他线程不能进行访问。直到该线程操作完毕，其他线程才可使用。不会出现数据不一致或者数据污染。</p>
+<p><strong>线程不安全</strong>：即使不提供数据访问保护，会出现多个线程先后更新数据造成脏数据。</p>
+<h2 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h2><p>如果进程中有多个线程在同时运行，这些线程可能会同时运行这段代码，若每次运行结果都是一样的，而且其他变量的值也都是和预期一样，那么我们就可以说这就是线程安全。</p>
+<p>若每个线程中对全局变量、静态变量只有读操作而无写操作，那么这些变量就是线程安全的，如果有多个线程同时执行写操作，就需要考虑线程同步，否则的话就可能有线程安全问题。</p>
+<h2 id="实例"><a href="#实例" class="headerlink" title="实例"></a>实例</h2><p>一个卖票用例</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> Lehanbal.study.threadRunable;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Demo02Ticket</span> <span class="keyword">implements</span> <span class="title">Runnable</span></span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> Ticket = <span class="number">100</span>;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">while</span>(Ticket &gt; <span class="number">0</span>)&#123;</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                Thread.sleep(<span class="number">100</span>);</span><br><span class="line">            &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">                e.printStackTrace();</span><br><span class="line">            &#125;</span><br><span class="line">            System.out.println(<span class="string">&quot;当前在卖第&quot;</span> + Ticket + <span class="string">&quot;票&quot;</span>);</span><br><span class="line">            Ticket--;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>主函数方法：开1K个线程，</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> Lehanbal.study.threadRunable;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        Demo02Ticket a = <span class="keyword">new</span> Demo02Ticket();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">new</span> Thread(a).start();</span><br><span class="line">        <span class="keyword">new</span> Thread(a).start();</span><br><span class="line">        <span class="keyword">new</span> Thread(a).start();</span><br><span class="line">        <span class="keyword">new</span> Thread(a).start();</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>最终的执行结果如下：</p>
+<p>当前在卖第100票</p>
+<p>当前在卖第100票</p>
+<p>当前在卖第100票</p>
+<p>当前在卖第100票</p>
+<p>….</p>
+<p>当前在卖第1票</p>
+<p>当前在卖第0票</p>
+<p>当前在卖第-1票</p>
+<p>当前在卖第-1票</p>
+<p>会出现一些不一致的情况，这就是线程不安全。解决的办法就是加上Synchronized让方法同步。</p>
+<p>修改如下：</p>
+<p>1、Synchronized修饰词，可以保证被修饰的方法同步</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> Lehanbal.study.threadRunable;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Demo02Ticket</span> <span class="keyword">implements</span> <span class="title">Runnable</span></span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> Ticket = <span class="number">100</span>;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">while</span>(Ticket &gt; <span class="number">0</span>)&#123;</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                Thread.sleep(<span class="number">100</span>);</span><br><span class="line">            &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">                e.printStackTrace();</span><br><span class="line">            &#125;</span><br><span class="line">            System.out.println(<span class="string">&quot;当前在卖第&quot;</span> + Ticket + <span class="string">&quot;票&quot;</span>);</span><br><span class="line">            Ticket--;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>2、加上锁，加上锁与解开锁的中间代码就是一整个原子代码，这一段保证了线程安全。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> Lehanbal.study.threadRunable;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.util.concurrent.locks.Lock;</span><br><span class="line"><span class="keyword">import</span> java.util.concurrent.locks.ReentrantLock;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Demo02Ticket</span> <span class="keyword">implements</span> <span class="title">Runnable</span></span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> Ticket = <span class="number">100</span>;</span><br><span class="line"></span><br><span class="line">    Lock lock = <span class="keyword">new</span> ReentrantLock();</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">while</span>(Ticket &gt; <span class="number">0</span>)&#123;</span><br><span class="line">            lock.lock();</span><br><span class="line">            <span class="keyword">if</span>(Ticket &gt; <span class="number">0</span>)&#123;</span><br><span class="line">                <span class="keyword">try</span> &#123;</span><br><span class="line">                    Thread.sleep(<span class="number">1000</span>);</span><br><span class="line">                &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">                    e.printStackTrace();</span><br><span class="line">                &#125;</span><br><span class="line">                System.out.println(<span class="string">&quot;当前在卖第&quot;</span> + Ticket + <span class="string">&quot;票&quot;</span>);</span><br><span class="line">                Ticket--;</span><br><span class="line">            &#125;</span><br><span class="line">            lock.unlock();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>操作系统</category>
+      </categories>
+      <tags>
+        <tag>操作系统</tag>
+        <tag>线程</tag>
+      </tags>
+  </entry>
+</search>

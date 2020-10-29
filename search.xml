@@ -121,6 +121,67 @@
       </tags>
   </entry>
   <entry>
+    <title>IO多路复用解析</title>
+    <url>/2020/10/29/IO%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8%E8%A7%A3%E6%9E%90/</url>
+    <content><![CDATA[<p>目前I/O多路复用的系统调用有select、poll和epoll，I/O多路复用就是通过一种机制，一个进程可以监视多个描述符，一旦某个描述符就绪（一般是读写），就能够通知程序进行相应的读写操作。但是刚刚提到的这些个系统调用本质上都是同步I/O，因为它们都需要在读写时间就绪后自己负责读写，因此这个读写过程是阻塞的，而异步I/O是不需要自己负责读写，异步I/O的思想会负责把数据从内核态拷贝到用户态。（但是频繁的切换上下文会导致系统性能开销）</p>
+<p>与多线程、多进程技术相比。I/O多路复用的最大优势就是系统开销小，系统不需要创建进程/线程，也不必维护它们，这样能减少很多系统开销。</p>
+<h2 id="使用场景"><a href="#使用场景" class="headerlink" title="使用场景"></a>使用场景</h2><p>I/O多路复用是指内核一旦发现进程指定的一个或多个I/O条件准备进行读写操作，就会通知进程。I/O多路复用适用如下场景。</p>
+<ol>
+<li>但客户处理多个描述符（多个Socket和交互式输入）。</li>
+<li>服务器同时处理TCP和UDP。</li>
+<li>服务器同时处理多个服务和多个协议。</li>
+<li>TCP服务器既需要继续监听，有需要处理已连接的套接字。</li>
+</ol>
+<h2 id="select、poll和epoll"><a href="#select、poll和epoll" class="headerlink" title="select、poll和epoll"></a>select、poll和epoll</h2><h3 id="select"><a href="#select" class="headerlink" title="select"></a>select</h3><p>基本上所有的操作系统都支持select方法，这个方法是阻塞的。select维护一个数组存储监听的进程的数组，每个数组元素代表单个进程，但是select监听文件描述符的数量是有最大限制的，Linux上一般是1024，虽然可以修改但是仍然使它的一个致命缺点。</p>
+<p>之后维持一个新的数组fd_set（实际上是bitmap）来代表每个描述符是否被更改。select会将修改的描述符通过对fd_set置零置一来实现。程序运行select的时候是在用户态进行操作，但是判断每个程序是否有数据的时候是将fd_set拷贝到了内核态，交给内核进行判定，有一次内核态和用户态的切换。</p>
+<p>总结一下：</p>
+<ol>
+<li>select方法设定的fd_set（bitmap）有大小限制。</li>
+<li>fd_set不可重用，有新的数据进来就需要重新创建一次。</li>
+<li>因为需要重新创建fd_set，所以有一个O(N)时间复杂度的轮询。</li>
+<li>其中有一次用户态到内核态的切换，会造成内系统开销。</li>
+</ol>
+<h3 id="poll"><a href="#poll" class="headerlink" title="poll"></a>poll</h3><p>poll和select的区别并不是很大，但是poll方法使用了一个结构体存储fd</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">pollfd</span>&#123;</span></span><br><span class="line">	<span class="keyword">int</span> fd;</span><br><span class="line">	<span class="keyword">short</span> events;</span><br><span class="line">	<span class="keyword">short</span> revents; <span class="comment">//可重用</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这也就解决了select这个中的1问题（因为结构体比bitmap大多了）。events是监听所要做的事件（一般是读和写），而revents则是通知进程数据来了的一个标识量。</p>
+<p>但revents 和 events一致时候就说明监听的接口要读/写，进行读写操作的同时将revents复位即可实现重复监听，不需要继续去遍历进程来重新设定标识位。也就解决了2的问题。</p>
+<p>但是它依旧执行了一次从用户态切换到内核态的过程，并且在进行数据处理的时候依旧是进行了一次遍历，仍是O(N)时间复杂度。</p>
+<p>它没有最大连接数的限制，<code>原因是它是基于链表来存储的</code>，但是同样有一个缺点：</p>
+<ol>
+<li>大量的fd的数组被整体复制于用户态和内核地址空间之间，而不管这样的复制是不是有意义。</li>
+<li>poll还有一个特点是“水平触发”，如果报告了fd后，没有被处理，那么下次poll时会再次报告该fd。</li>
+</ol>
+<h3 id="epoll"><a href="#epoll" class="headerlink" title="epoll"></a>epoll</h3><p>最新的一种I/O多路复用函数。是select和poll的增强版本。epoll更加灵活，没有描述符限制。epoll使用一个文件描述符管理多个描述符，将用户关系的文件描述符的事件存放到内核的一个事件表中，这样在用户空间和内核空间的copy只需一次。</p>
+<p>epoll在进行判断描述符状态的时候，用户态和内核态共享一片内存空间，没有进行用户态到内核态的切换，解决了4的问题，并且在内核进行描述符判断的时候，会讲被修改的描述符进行一个排序，使他们有序的排列在前，这样一来就不需要轮询便能够实现对描述符的确认。将时间复杂度降到了O(1)。</p>
+<p>总结：</p>
+<ol>
+<li><p>没有最大并发连接的限制，能打开的FD的上限远大于1024（1G的内存上能监听约10万个端口）。</p>
+</li>
+<li><p>效率提升，不是轮询的方式，不会随着FD数目的增加效率下降。</p>
+<p>只有活跃可用的FD才会调用callback函数；即Epoll最大的优点就在于它只管你“活跃”的连接，而跟连接总数无关，因此在实际的网络环境中，Epoll的效率就会远远高于select和poll。</p>
+</li>
+<li><p>内存拷贝，利用mmap()文件映射内存加速与内核空间的消息传递；即epoll使用mmap减少复制开销。</p>
+</li>
+</ol>
+<p>epoll对文件描述符的操作有两种模式：<code>LT（level trigger）和ET（edge trigger）</code>。LT模式是默认模式，LT模式与ET模式的区别如下：</p>
+<p>LT模式：当epoll_wait检测到描述符事件发生并将此事件通知应用程序，<code>应用程序可以不立即处理该事件</code>。下次调用epoll_wait时，会再次响应应用程序并通知此事件。</p>
+<p>ET模式：当epoll_wait检测到描述符事件发生并将此事件通知应用程序，<code>应用程序必须立即处理该事件</code>。如果不处理，下次调用epoll_wait时，不会再次响应应用程序并通知此事件。</p>
+<p><strong>1、LT模式</strong></p>
+<p><code>　　LT(level triggered)是缺省的工作方式，并且同时支持block和no-block socket</code>。在这种做法中，内核告诉你一个文件描述符是否就绪了，然后你可以对这个就绪的fd进行IO操作。<code>如果你不作任何操作，内核还是会继续通知你的</code>。</p>
+<p><strong>2、ET模式</strong></p>
+<p>ET(edge-triggered)是高速工作方式，只支持no-block socket。在这种模式下，当描述符从未就绪变为就绪时，内核通过epoll告诉你。然后它会假设你知道文件描述符已经就绪，并且不会再为那个文件描述符发送更多的就绪通知，直到你做了某些操作导致那个文件描述符不再为就绪状态了(比如，你在发送，接收或者接收请求，或者发送接收的数据少于一定量时导致了一个EWOULDBLOCK 错误）。但是请注意，如果一直不对这个fd作IO操作(从而导致它再次变成未就绪)，内核不会发送更多的通知(only once)。</p>
+<p>ET模式在很大程度上减少了epoll事件被重复触发的次数，因此效率要比LT模式高。epoll工作在ET模式的时候，必须使用非阻塞套接口，以避免由于一个文件句柄的阻塞读/阻塞写操作把处理多个文件描述符的任务饿死。</p>
+<p>在select/poll中，进程只有在调用一定的方法后，内核才对所有监视的文件描述符进行扫描，而epoll事先通过epoll_ctl()来注册一个文件描述符，一旦基于某个文件描述符就绪时，内核会采用类似callback的回调机制，迅速激活这个文件描述符，当进程调用epoll_wait()时便得到通知。(此处去掉了遍历文件描述符，而是通过监听回调的的机制。这正是epoll的魅力所在。)</p>
+]]></content>
+      <categories>
+        <category>计算机网络</category>
+      </categories>
+      <tags>
+        <tag>IO流</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>进程与线程</title>
     <url>/2020/10/29/%E8%BF%9B%E7%A8%8B%E4%B8%8E%E7%BA%BF%E7%A8%8B/</url>
     <content><![CDATA[<h2 id="进程"><a href="#进程" class="headerlink" title="进程"></a>进程</h2><p>在计算机操作系统中，<strong>进程是资源分配的基本单位</strong>，也是独立运行的基本单位。</p>

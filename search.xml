@@ -180,6 +180,17 @@
       </tags>
   </entry>
   <entry>
+    <title>操作系统必杀题</title>
+    <url>/2020/10/30/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%BF%85%E6%9D%80%E9%A2%98/</url>
+    <content><![CDATA[]]></content>
+      <categories>
+        <category>操作系统</category>
+      </categories>
+      <tags>
+        <tag>操作系统</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>IO多路复用解析</title>
     <url>/2020/10/29/IO%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8%E8%A7%A3%E6%9E%90/</url>
     <content><![CDATA[<p>目前I/O多路复用的系统调用有select、poll和epoll，I/O多路复用就是通过一种机制，一个进程可以监视多个描述符，一旦某个描述符就绪（一般是读写），就能够通知程序进行相应的读写操作。但是刚刚提到的这些个系统调用本质上都是同步I/O，因为它们都需要在读写时间就绪后自己负责读写，因此这个读写过程是阻塞的，而异步I/O是不需要自己负责读写，异步I/O的思想会负责把数据从内核态拷贝到用户态。（但是频繁的切换上下文会导致系统性能开销）</p>

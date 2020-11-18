@@ -2185,4 +2185,53 @@
         <tag>Redis</tag>
       </tags>
   </entry>
+  <entry>
+    <title>Redis数据备份与恢复</title>
+    <url>/2020/11/18/Redis%E6%95%B0%E6%8D%AE%E5%A4%87%E4%BB%BD%E4%B8%8E%E6%81%A2%E5%A4%8D/</url>
+    <content><![CDATA[<h2 id="备份模式"><a href="#备份模式" class="headerlink" title="备份模式"></a>备份模式</h2><p>在Redis中，有两种数据备份的方式：</p>
+<ol>
+<li><p>RDB</p>
+<p>RDB持久化是指在指定的时间间隔内将内存中的数据集快照写入磁盘中，fork一个子进程，先将数据集写入临时文件，写入成功后再替换之前的文件，用二进制压缩存储。它的特点是粒度较大，如果在触发存储机制之前crash，那么会丢失最后一次备份之后的数据内容。在Redis中使用“save”命令或者等待配置文件中的指定时间内的数据修改量符合进行RDB存储。</p>
+</li>
+<li><p>AOF</p>
+<p>AOF持久化以日志的形式记录服务器所处理的每一个写、删操作，查询操作不会记录，以文本的方式记录，可以打开文件看到详细的操作记录。也可以在后台对AOF进行重写，使得AOF文件的体积不会超出保存数据集状态所需的实际大小。它的特点是粒度较小，能够实时保存数据。</p>
+</li>
+</ol>
+<p>默认使用的是RDB方式。</p>
+<p>它们在配置文件中的描述为：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment">############################## APPEND ONLY MODE ###############################</span></span><br><span class="line"><span class="comment"># AOF截取</span></span><br><span class="line">appendonly no <span class="comment">## 是否开启AOF模式，默认关闭</span></span><br><span class="line">appendfilename <span class="string">&quot;appendonly.aof&quot;</span> <span class="comment">## 产生出来的备份文件默认名</span></span><br><span class="line">appendfsync everysec <span class="comment">## AOF执行频率</span></span><br><span class="line"><span class="comment"># save &quot;&quot; 关闭注释</span></span><br><span class="line"><span class="comment">################################ SNAPSHOTTING  ################################</span></span><br><span class="line"><span class="comment"># RDB截取</span></span><br><span class="line">save 900 1</span><br><span class="line">save 300 10</span><br><span class="line">save 60 10000 <span class="comment">## save 时间间隔 被修改的数据量（若达到对应的被修改的数据量，在对应的时间间隔就会被备份）</span></span><br><span class="line"><span class="comment"># save &quot;&quot; #关闭注释可以关闭RDB</span></span><br><span class="line">dbfilename dump.rdb</span><br></pre></td></tr></table></figure>
+
+<p>Redis可以同时开启AOF和RDB，这种情况下，当Redis重启的时候，会优先使用AOF文件来还原数据集，因为AOF文件保存的数据集通常比RDB文件所保存的数据集更为完整。也可以两个都关闭。</p>
+<h2 id="选择标准"><a href="#选择标准" class="headerlink" title="选择标准"></a>选择标准</h2><p>如果牺牲一部分系统的性能，换取更高的的缓存一致性，那就选择AOF。</p>
+<p>如果写操作频繁，使用RDB可以换取更高的系统性能。</p>
+<h2 id="RDB优缺点"><a href="#RDB优缺点" class="headerlink" title="RDB优缺点"></a>RDB优缺点</h2><p>优点：</p>
+<ol>
+<li>RDB是一个非常紧凑的文件，它保存了Redis在某个时间点上的数据集。这种文件非常适用于备份，可以回退到保存的时间点上的数据集。适用于灾难恢复。</li>
+<li>性能更高，父进程在保存RDB文件时唯一要做的就是fork出一个子进程，然后这个子进程会处理接下来的保存工作，父进程无须执行任何磁盘I/O操作。</li>
+<li>RDB在回复大数据集时比AOF恢复得要快。</li>
+</ol>
+<p>缺点：</p>
+<ol>
+<li>如果服务端突然crash，会丢失最后一次保存之后的数据集。这也就不能够保证数据的缓存一致性。</li>
+<li>每次保存数据的时候，Redis都会fork出一个子进程，让子进程自己进行实际的持久化操作。当数据集较为庞大的时候，fork可能会非常耗时，造成服务器停止处理客户端数据的情况。</li>
+</ol>
+<h2 id="AOF优缺点"><a href="#AOF优缺点" class="headerlink" title="AOF优缺点"></a>AOF优缺点</h2><p>优点：</p>
+<ol>
+<li>使用AOF可以设置不同的fsync策略，AOF默认策略为everysec（每秒执行一次），其他的策略还有Always（每写入一条指令就执行一次）、NO（由操作系统决定什么时候执行）。</li>
+<li>会自动调整备份文件大小，当AOF文件大小达到一定程度的时候，后台会自动去执行AOF重写，此过程不会影响主进程，重写完成后，新的写入会写到新的AOF中，旧的会被删除。</li>
+</ol>
+<p>缺点：</p>
+<ol>
+<li>性能相对较差，它的操作模式决定了它会对Redis的性能有所损耗。</li>
+<li>体积相对更大，尽管是将aof文件重写了，但是毕竟是操作过程和操作结果仍然由较大的差别，所以体积会更大。</li>
+<li>恢复舒服略慢。</li>
+</ol>
+]]></content>
+      <categories>
+        <category>Redis</category>
+      </categories>
+      <tags>
+        <tag>Redis</tag>
+      </tags>
+  </entry>
 </search>

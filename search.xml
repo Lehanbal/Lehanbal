@@ -1,6 +1,159 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>Lock锁与Condition初解</title>
+    <url>/2020/11/20/Lock%E9%94%81%E4%B8%8ECondition%E5%88%9D%E8%A7%A3/</url>
+    <content><![CDATA[<p><code>synchronized</code>可以实现线程之间的同步互斥，在jdk1.5之后新增加了一个<code>ReentrantLock</code>类也能够实现线程的同步问题， 并且粒度比<code>synchronized</code>要小。</p>
+<p>Lock实现提供比使用<code>synchronized</code>方法和语句可以获得的更广泛的锁定操作。  它们允许更灵活的结构化，可能具有完全不同的属性，并且可以支持多个相关联的对象<code>Condition</code></p>
+<p><code>ReentrantLock</code>实现了<code>Lock</code>接口，该接口有具体的三个实现类，分别是</p>
+<ol>
+<li><code>ReentrantLock</code>:可重入锁。</li>
+<li><code>ReentrantReadWriteLock.WriteLock</code>：写锁，只能有一个进程访问。</li>
+<li><code>ReentrantReadWriteLock.ReadLock</code>：读锁，可以允许多个线程同时访问。</li>
+</ol>
+<p>这里对<code>ReentrantLock</code>进行进一步的说明。</p>
+<h2 id="使用ReentrankLock实现线程同步"><a href="#使用ReentrankLock实现线程同步" class="headerlink" title="使用ReentrankLock实现线程同步"></a>使用<code>ReentrankLock</code>实现线程同步</h2><p><code>ReentrankLock</code>的方法中<code>lock</code>和<code>unlock</code>，分别表示上锁和解锁，我们一般将<code>unlock</code>放在try..catch..finally..的finally中，为了能够确保锁能够正确释放，避免造成死锁。</p>
+<p>另外有一点需要注意的是，<code>synchronized</code>在线程进入阻塞状态的时候，是会将锁释放的，而<code>ReentrankLock</code>不一样，即使是线程进入阻塞也不会将锁释放。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> top.lehanbal.lock;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.util.concurrent.locks.ReentrantLock;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Resource</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> ticket = <span class="number">10</span>;</span><br><span class="line">    ReentrantLock lock = <span class="keyword">new</span> ReentrantLock();</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">sale</span><span class="params">()</span></span>&#123;</span><br><span class="line">        lock.lock();</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="keyword">while</span>(ticket &gt; <span class="number">0</span>)&#123;</span><br><span class="line">                System.out.println(<span class="string">&quot;线程&quot;</span> + Thread.currentThread().getName() + <span class="string">&quot;卖出了第&quot;</span> + (ticket--) + <span class="string">&quot;张票，还剩下&quot;</span>+ ticket + <span class="string">&quot;张票&quot;</span>);</span><br><span class="line">                TimeUnit.MILLISECONDS.sleep(<span class="number">50</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;<span class="keyword">catch</span> (Exception e)&#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;<span class="keyword">finally</span> &#123;</span><br><span class="line">            lock.unlock();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LockTest</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        Resource resource = <span class="keyword">new</span> Resource();</span><br><span class="line">        <span class="keyword">new</span> Thread(resource :: sale, <span class="string">&quot;A&quot;</span>).start();</span><br><span class="line">        <span class="keyword">new</span> Thread(resource :: sale, <span class="string">&quot;B&quot;</span>).start();</span><br><span class="line">        <span class="keyword">new</span> Thread(resource :: sale, <span class="string">&quot;C&quot;</span>).start();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>结果为：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">线程A卖出了第10张票，还剩下9张票</span><br><span class="line">线程A卖出了第9张票，还剩下8张票</span><br><span class="line">线程A卖出了第8张票，还剩下7张票</span><br><span class="line">线程A卖出了第7张票，还剩下6张票</span><br><span class="line">线程A卖出了第6张票，还剩下5张票</span><br><span class="line">线程A卖出了第5张票，还剩下4张票</span><br><span class="line">线程A卖出了第4张票，还剩下3张票</span><br><span class="line">线程A卖出了第3张票，还剩下2张票</span><br><span class="line">线程A卖出了第2张票，还剩下1张票</span><br><span class="line">线程A卖出了第1张票，还剩下0张票</span><br></pre></td></tr></table></figure>
+
+<p>可以看到全都是线程A卖出去的票，线程B与C都在等待A释放锁才能执行。</p>
+<p>一个线程在卖力的干事，另外两个线程摸鱼，这种情况能叫多线程吗，我说不能。</p>
+<p>为了防止线程摸鱼，在Condition中的await()方法就是在线程进入休眠的时候把锁让出来，方便其他线程进行作业。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> top.lehanbal.lock;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.util.concurrent.TimeUnit;</span><br><span class="line"><span class="keyword">import</span> java.util.concurrent.locks.Condition;</span><br><span class="line"><span class="keyword">import</span> java.util.concurrent.locks.ReentrantLock;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Resource</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> ticket = <span class="number">10</span>;</span><br><span class="line">    ReentrantLock lock = <span class="keyword">new</span> ReentrantLock();</span><br><span class="line">    Condition condition1 = lock.newCondition();</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">sale</span><span class="params">()</span></span>&#123;</span><br><span class="line">        lock.lock();</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="keyword">while</span>(ticket &gt; <span class="number">0</span>)&#123;</span><br><span class="line">                System.out.println(<span class="string">&quot;线程&quot;</span> + Thread.currentThread().getName() + <span class="string">&quot;卖出了第&quot;</span> + (ticket--) + <span class="string">&quot;张票，还剩下&quot;</span>+ ticket + <span class="string">&quot;张票&quot;</span>);</span><br><span class="line">                condition1.await(<span class="number">50</span>, TimeUnit.MILLISECONDS);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;<span class="keyword">catch</span> (Exception e)&#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;<span class="keyword">finally</span> &#123;</span><br><span class="line">            lock.unlock();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LockTest</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        Resource resource = <span class="keyword">new</span> Resource();</span><br><span class="line">        <span class="keyword">new</span> Thread(resource :: sale, <span class="string">&quot;A&quot;</span>).start();</span><br><span class="line">        <span class="keyword">new</span> Thread(resource :: sale, <span class="string">&quot;B&quot;</span>).start();</span><br><span class="line">        <span class="keyword">new</span> Thread(resource :: sale, <span class="string">&quot;C&quot;</span>).start();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>结果如下：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">线程A卖出了第10张票，还剩下9张票</span><br><span class="line">线程B卖出了第9张票，还剩下8张票</span><br><span class="line">线程C卖出了第8张票，还剩下7张票</span><br><span class="line">线程B卖出了第7张票，还剩下6张票</span><br><span class="line">线程A卖出了第6张票，还剩下5张票</span><br><span class="line">线程C卖出了第5张票，还剩下4张票</span><br><span class="line">线程A卖出了第4张票，还剩下3张票</span><br><span class="line">线程C卖出了第3张票，还剩下2张票</span><br><span class="line">线程B卖出了第2张票，还剩下1张票</span><br><span class="line">线程A卖出了第1张票，还剩下0张票</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="公平锁与非公平锁"><a href="#公平锁与非公平锁" class="headerlink" title="公平锁与非公平锁"></a>公平锁与非公平锁</h2><p>公平锁：表示线程获取锁的顺序是按照线程加锁的顺序来进行分配的，即先到先得，先进先出的顺序。</p>
+<p>非公平锁：一种获取锁的抢占机制，是随即拿到锁的，和公平锁不一样的是想来的不一定先拿到锁，这个方式可能造成某些线程一直拿不到锁，结果是不公平的。</p>
+<p>源码如下，根据传递的Boolean值来区分：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">ReentrantLock</span><span class="params">(<span class="keyword">boolean</span> fair)</span> </span>&#123;</span><br><span class="line">    sync = fair ? <span class="keyword">new</span> FairSync() : <span class="keyword">new</span> NonfairSync();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="Condition解析"><a href="#Condition解析" class="headerlink" title="Condition解析"></a>Condition解析</h2><p>synchronized关键字可以配合Object的wait()、notify()等方法实现等待/通知模式。Condition接口提供了类似的Object的监视器方法，与Lock配合实现等待通知模式。</p>
+<p>Object监视方法与Condition方法的区别：</p>
+<table>
+<thead>
+<tr>
+<th>对比项</th>
+<th>Object Monitor Methods</th>
+<th>Condition</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>前置条件</td>
+<td>获取对象的锁</td>
+<td>调用<code>Lock.lock()</code>获得锁，调用<code>lock.newCondition()</code>获取Condition对象</td>
+</tr>
+<tr>
+<td>调用方式</td>
+<td>直接调用：<code>Object.wait()</code></td>
+<td>直接调用：<code>condition.await()</code></td>
+</tr>
+<tr>
+<td>等待队列个数</td>
+<td>一个</td>
+<td>多个</td>
+</tr>
+<tr>
+<td>当前线程释放锁并进入等待状态</td>
+<td>支持</td>
+<td>支持</td>
+</tr>
+<tr>
+<td>当前线程释放锁并进入等待状态，在等待状态中不响应中断</td>
+<td>不支持</td>
+<td>支持</td>
+</tr>
+<tr>
+<td>当前线程释放锁并进入超时等待状态</td>
+<td>支持</td>
+<td>支持</td>
+</tr>
+<tr>
+<td>当前线程释放锁并进入等待状态到将来的某个时间</td>
+<td>不支持</td>
+<td>支持</td>
+</tr>
+<tr>
+<td>唤醒等待队列中的一个线程</td>
+<td>支持</td>
+<td>支持</td>
+</tr>
+<tr>
+<td>唤醒等待队列中的全部线程</td>
+<td>支持</td>
+<td>支持</td>
+</tr>
+</tbody></table>
+<h3 id="Condition接口方法"><a href="#Condition接口方法" class="headerlink" title="Condition接口方法"></a>Condition接口方法</h3><table>
+<thead>
+<tr>
+<th>方法名</th>
+<th>方法内容</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>await()</code></td>
+<td>造成当前线程在接到信号或被中断之前一直处于等待状态</td>
+</tr>
+<tr>
+<td><code>await(long time, TimeUnit unit)</code></td>
+<td>造成当前线程在接到信号、被中断或到达指定等待时间之前一直处于等待状态</td>
+</tr>
+<tr>
+<td><code>awaitNanos(long nanosTimeout)</code></td>
+<td>造成当前线程在接到信号、被中断或到达指定等待时间之前一直处于等待状态。返回值表示剩余时间，如果在<code>nanosTimesout</code>之前被唤醒，返回值 = <code>nanosTimeout</code> - 消耗时间，如果返回值小于等于0则可以认定它已经超时了。</td>
+</tr>
+<tr>
+<td><code>awaitUninterruptibly()</code></td>
+<td>造成当前信号在接到信号之前一直处于等待状态。（该方法对中断不敏感）</td>
+</tr>
+<tr>
+<td><code>awaitUntil(Date deadline)</code></td>
+<td>造成当前线程在接到信号、被中断或到达指定最后期限之前一直处于等待状态。如果没有到指定时间就被通知，则返回true，否则表示到了指定时间，返回false</td>
+</tr>
+<tr>
+<td><code>signal()</code></td>
+<td>唤醒一个等待线程。该线程从等待方法返回前必须获得与Condition相关的锁</td>
+</tr>
+<tr>
+<td><code>signalAll()</code></td>
+<td>唤醒所有等待线程。能够从等待方法返回的线程必须获得与Condition相关的锁</td>
+</tr>
+</tbody></table>
+<h2 id="读写锁"><a href="#读写锁" class="headerlink" title="读写锁"></a>读写锁</h2><p><code>ReentrankLock</code>具有完全互斥排他的效果，同一时间只能够有一个线程执行lock锁后面的代码，虽然能够保证线程的安全性，但是效率不高。读写锁就是为了在特定条件提高效率而出现的。</p>
+<p>读写锁表示两个锁：</p>
+<p>读操作相关的锁，也叫共享锁。</p>
+<p>写操作相关的锁，也叫排他锁。</p>
+<p>多个读锁之间不互斥，读锁与写锁互斥，多个写锁互斥。</p>
+<h3 id="ReentrantReadWriteLock-ReadLock读锁"><a href="#ReentrantReadWriteLock-ReadLock读锁" class="headerlink" title="ReentrantReadWriteLock.ReadLock读锁"></a><code>ReentrantReadWriteLock.ReadLock</code>读锁</h3><p>多个读锁同时访问资源：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> top.lehanbal.lock;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.util.concurrent.locks.ReentrantReadWriteLock;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ReadResource</span> </span>&#123;</span><br><span class="line">    ReentrantReadWriteLock.ReadLock readLock = <span class="keyword">new</span> ReentrantReadWriteLock().readLock();</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">readMethod</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        readLock.lock();</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            System.out.println(System.currentTimeMillis());</span><br><span class="line">            System.out.println(Thread.currentThread().getName() + <span class="string">&quot;访问了&quot;</span>);</span><br><span class="line">        &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">            readLock.unlock();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.util.concurrent.locks.ReentrantLock;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Resource</span> </span>&#123;</span><br><span class="line">    <span class="keyword">static</span> ReentrantLock lock = <span class="keyword">new</span> ReentrantLock(<span class="keyword">true</span>);</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">sale</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(Thread.currentThread().getName() + <span class="string">&quot;运行了&quot;</span>);</span><br><span class="line">        lock.lock();</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            System.out.println(Thread.currentThread().getName() + <span class="string">&quot;获得锁,是否有锁等待&quot;</span> + lock.hasQueuedThreads());</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">            System.out.println(Thread.currentThread().getName() + <span class="string">&quot;释放锁,是否有锁等待&quot;</span> + lock.hasQueuedThreads() + <span class="string">&quot;等待数量为&quot;</span> + lock.getQueueLength());</span><br><span class="line">            lock.unlock();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>结果如下，几乎是在同一时间进行访问的。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">1605876055602</span><br><span class="line">1605876055602</span><br><span class="line">1605876055602</span><br><span class="line">A访问了</span><br><span class="line">C访问了</span><br><span class="line">B访问了</span><br></pre></td></tr></table></figure>
+
+<h3 id="ReentrantReadWriteLock-WriteLock写锁"><a href="#ReentrantReadWriteLock-WriteLock写锁" class="headerlink" title="ReentrantReadWriteLock.WriteLock写锁"></a><code>ReentrantReadWriteLock.WriteLock</code>写锁</h3><p>多个写锁互斥：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> top.lehanbal.lock;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.util.concurrent.TimeUnit;</span><br><span class="line"><span class="keyword">import</span> java.util.concurrent.locks.ReentrantReadWriteLock;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">WriteResource</span> </span>&#123;</span><br><span class="line">    ReentrantReadWriteLock lock = <span class="keyword">new</span> ReentrantReadWriteLock();</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">writeMethod</span><span class="params">()</span></span>&#123;</span><br><span class="line">        lock.writeLock().lock();</span><br><span class="line">        <span class="keyword">try</span>&#123;</span><br><span class="line">            System.out.println(Thread.currentThread().getName() + <span class="string">&quot;获取写锁，获取时间为：&quot;</span> + System.currentTimeMillis());</span><br><span class="line">            TimeUnit.MILLISECONDS.sleep(<span class="number">500</span>);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">            lock.writeLock().unlock();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LockTest</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        WriteResource writeResource = <span class="keyword">new</span> WriteResource();</span><br><span class="line">        <span class="keyword">new</span> Thread(writeResource :: writeMethod, <span class="string">&quot;A&quot;</span>).start();</span><br><span class="line">        <span class="keyword">new</span> Thread(writeResource :: writeMethod, <span class="string">&quot;B&quot;</span>).start();</span><br><span class="line">        <span class="keyword">new</span> Thread(writeResource :: writeMethod, <span class="string">&quot;C&quot;</span>).start();</span><br><span class="line">        <span class="keyword">new</span> Thread(writeResource :: writeMethod, <span class="string">&quot;D&quot;</span>).start();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>停顿了500ms，防止cpu执行太快了从结果看不出来。可以看出写锁都是分别获取的。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">A获取写锁，获取时间为：1605876558509</span><br><span class="line">B获取写锁，获取时间为：1605876559020</span><br><span class="line">C获取写锁，获取时间为：1605876559520</span><br><span class="line">D获取写锁，获取时间为：1605876560021</span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>JAVA</category>
+      </categories>
+      <tags>
+        <tag>JAVA</tag>
+        <tag>JUC</tag>
+        <tag>LOCK</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>synchronized初解</title>
     <url>/2020/11/19/synchronized%E5%88%9D%E8%A7%A3/</url>
     <content><![CDATA[<p>synchronized是java中的一个实现同步的关键字。</p>

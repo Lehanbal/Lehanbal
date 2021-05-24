@@ -23,14 +23,14 @@
 <p>到.ssh目录下，若存在文件则说明ssh存在，没有的话就是ssh没了，</p>
 <p>使用命令</p>
 <blockquote>
-<p>ssh-keygen -t rsa -C “<a href="mailto:&#120;&#x78;&#x78;&#120;&#120;&#64;&#120;&#x78;&#x78;&#x2e;&#99;&#x6f;&#109;">&#120;&#x78;&#x78;&#120;&#120;&#64;&#120;&#x78;&#x78;&#x2e;&#99;&#x6f;&#109;</a>”</p>
+<p>ssh-keygen -t rsa -C “<a href="mailto:&#x78;&#x78;&#x78;&#x78;&#x78;&#x40;&#x78;&#x78;&#x78;&#46;&#x63;&#x6f;&#x6d;">&#x78;&#x78;&#x78;&#x78;&#x78;&#x40;&#x78;&#x78;&#x78;&#46;&#x63;&#x6f;&#x6d;</a>”</p>
 </blockquote>
 <p>根据提示重新申请ssh</p>
 <h3 id="未丢失SSH-key的情况"><a href="#未丢失SSH-key的情况" class="headerlink" title="未丢失SSH key的情况"></a>未丢失SSH key的情况</h3><p>拥有ssh之后，在之前的github界面点击”New SSH key”去添加ssh即可。</p>
 <p><img src="https://gitee.com/lehanbal/blog-image/raw/master/img/20210524162302.png" alt="image-20210524162302393"></p>
 <p>添加ssh之后，在Git控制台，通过命令</p>
 <blockquote>
-<p> ssh -T <a href="mailto:&#103;&#x69;&#116;&#64;&#103;&#x69;&#116;&#104;&#117;&#98;&#46;&#x63;&#x6f;&#x6d;">&#103;&#x69;&#116;&#64;&#103;&#x69;&#116;&#104;&#117;&#98;&#46;&#x63;&#x6f;&#x6d;</a></p>
+<p> ssh -T <a href="mailto:&#x67;&#105;&#116;&#x40;&#103;&#105;&#x74;&#x68;&#117;&#x62;&#46;&#99;&#111;&#109;">&#x67;&#105;&#116;&#x40;&#103;&#105;&#x74;&#x68;&#117;&#x62;&#46;&#99;&#111;&#109;</a></p>
 </blockquote>
 <p>测试是否成功配置ssh</p>
 <p>出现以下内容说明成功</p>
@@ -38,7 +38,7 @@
 <p>之后通过</p>
 <blockquote>
 <p>git config –global user.name “xxxxx”// 你的github用户名，非昵称 </p>
-<p>git config –global user.email  “<a href="mailto:&#120;&#x78;&#x78;&#x40;&#120;&#x78;&#120;&#x2e;&#99;&#111;&#109;">&#120;&#x78;&#x78;&#x40;&#120;&#x78;&#120;&#x2e;&#99;&#111;&#109;</a>“// 填写你的github注册邮箱</p>
+<p>git config –global user.email  “<a href="mailto:&#x78;&#120;&#x78;&#64;&#x78;&#120;&#x78;&#x2e;&#x63;&#x6f;&#109;">&#x78;&#120;&#x78;&#64;&#x78;&#120;&#x78;&#x2e;&#x63;&#x6f;&#109;</a>“// 填写你的github注册邮箱</p>
 </blockquote>
 <p>填写相关信息</p>
 <h2 id="图床搭建"><a href="#图床搭建" class="headerlink" title="图床搭建"></a>图床搭建</h2><p>我使用的是picgo+Gitee作为图床</p>
@@ -47,12 +47,103 @@
 <p>之后</p>
 <p><img src="https://gitee.com/lehanbal/blog-image/raw/master/img/20210524161358.png" alt="image-20210524161358496"></p>
 <p>gitee中的设置去申请私人令牌，这个令牌就是下文的token令牌，申请到后请妥善保存，不然下次依旧得继续申请。</p>
-<p>之后[下载Picgo](<a href="https://github.com/Molunerfinn/PicGo/releases">Releases · Molunerfinn/PicGo (github.com)</a>)</p>
+<p>之后<a href="https://github.com/Molunerfinn/PicGo/releases">下载Picgo</a></p>
 <p>安装好后打开插件设置去安装gitee-uploader插件</p>
 <p><img src="https://gitee.com/lehanbal/blog-image/raw/master/img/20210524161033.png" alt="image-20210524161033098"></p>
 <p>安装好后设置gitee图床</p>
 <p><img src="https://gitee.com/lehanbal/blog-image/raw/master/img/20210524161257.png" alt="image-20210524161257370"></p>
 <p>到这图床就设置完毕</p>
+<h2 id="写文章"><a href="#写文章" class="headerlink" title="写文章"></a>写文章</h2><p>可以使用hexo的一些写文章的命令来操作，但是使用插件更方便点，安装hexo-admin</p>
+<blockquote>
+<p>npm install hexo-admin –save</p>
+</blockquote>
+<p>之后在控制台输入hexo server -d运行服务器</p>
+<p>进入<a href="http://localhost:4000/admin%E5%B0%B1%E8%83%BD%E5%A4%9F%E8%BF%9B%E8%A1%8C%E6%96%87%E7%AB%A0%E7%AE%A1%E7%90%86">http://localhost:4000/admin就能够进行文章管理</a></p>
+<h3 id="创建文章"><a href="#创建文章" class="headerlink" title="创建文章"></a>创建文章</h3><p>不想使用插件的时候，可以通过</p>
+<blockquote>
+<p>hexo new “文章名称”</p>
+</blockquote>
+<p>文章会被创建到</p>
+<blockquote>
+<p>hexo/source/_posts</p>
+</blockquote>
+<p>目录下</p>
+<p>也可以通过</p>
+<blockquote>
+<p>hexo new draft “new draft”</p>
+</blockquote>
+<p>来创建一个草稿。</p>
+<p>通过</p>
+<blockquote>
+<p>hexo server –drafts</p>
+</blockquote>
+<p>浏览草稿。</p>
+<p>通过</p>
+<blockquote>
+<p>hexo publish [layout] <filename></p>
+</blockquote>
+<p>将草稿变成文章。</p>
+<h3 id="文章属性"><a href="#文章属性" class="headerlink" title="文章属性"></a>文章属性</h3><p>在md文件头部写上进行如下内容：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">---</span><br><span class="line">title: <span class="comment">#标题</span></span><br><span class="line">date: 2017-12-02 21:01:24 <span class="comment">#时间</span></span><br><span class="line">toc: <span class="literal">true</span> <span class="comment">#是否显示文章目录</span></span><br><span class="line">categories: </span><br><span class="line">tags:   <span class="comment">#标签</span></span><br><span class="line">	- <span class="comment">#标签1</span></span><br><span class="line">	- <span class="comment">#标签2</span></span><br><span class="line">---</span><br></pre></td></tr></table></figure>
+
+<p>还有其他的属性如下：</p>
+<table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>layout</td>
+<td>Layout</td>
+<td>post或page</td>
+</tr>
+<tr>
+<td>title</td>
+<td>文章的标题</td>
+<td></td>
+</tr>
+<tr>
+<td>date</td>
+<td>创建日期</td>
+<td>文件的创建日期</td>
+</tr>
+<tr>
+<td>updated</td>
+<td>修改日期</td>
+<td>文件的修改日期</td>
+</tr>
+<tr>
+<td>comments</td>
+<td>是否开启评论</td>
+<td>true</td>
+</tr>
+<tr>
+<td>tags</td>
+<td>标签</td>
+<td></td>
+</tr>
+<tr>
+<td>categories</td>
+<td>分类</td>
+<td></td>
+</tr>
+<tr>
+<td>permalink</td>
+<td>url中的名字</td>
+<td>文件名</td>
+</tr>
+</tbody></table>
+<h2 id="hexo命令"><a href="#hexo命令" class="headerlink" title="hexo命令"></a>hexo命令</h2><h3 id="hexo环境"><a href="#hexo环境" class="headerlink" title="hexo环境"></a>hexo环境</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">npm install hexo -g <span class="comment">#安装  </span></span><br><span class="line">npm update hexo -g <span class="comment">#升级  </span></span><br><span class="line">hexo init <span class="comment">#初始化</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="服务器"><a href="#服务器" class="headerlink" title="服务器"></a>服务器</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">hexo server <span class="comment">#Hexo 会监视文件变动并自动更新，您无须重启服务器。</span></span><br><span class="line">hexo server -s <span class="comment">#静态模式</span></span><br><span class="line">hexo server -p 5000 <span class="comment">#更改端口</span></span><br><span class="line">hexo server -i 192.168.1.1 <span class="comment">#自定义 IP</span></span><br><span class="line"></span><br><span class="line">hexo clean <span class="comment">#清除缓存 网页正常情况下可以忽略此条命令</span></span><br><span class="line">hexo g <span class="comment">#生成静态网页</span></span><br><span class="line">hexo d <span class="comment">#开始部署</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="监视文件变动"><a href="#监视文件变动" class="headerlink" title="监视文件变动"></a>监视文件变动</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">hexo generate <span class="comment">#使用 Hexo 生成静态文件快速而且简单</span></span><br><span class="line">hexo generate --watch <span class="comment">#监视文件变动</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="完成后部署"><a href="#完成后部署" class="headerlink" title="完成后部署"></a>完成后部署</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">hexo deploy -g</span><br><span class="line">hexo server -g</span><br></pre></td></tr></table></figure>
+
 ]]></content>
       <categories>
         <category>Blog</category>

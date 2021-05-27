@@ -1,0 +1,18 @@
+class:
+  class_name: 友链
+  link_list:
+    1:
+      name: Hambaga
+      link: https://blog.csdn.net/Kwansy
+      avatar: https://avatar.csdnimg.cn/0/E/4/1_kwansy.jpg
+      descr: 宿舍内顶尖安全专家
+    2:
+      name: AJCoder
+      link: https://gitee.com/LowChen/picgo/raw/master/img/WeChat.jpg
+      avatar: https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=2862794182,2837702713&fm=26&gp=0.jpg
+      descr: JAVA行业零头人物公众号
+    3:
+      name: Mnion
+      link: https://mnion.gitee.io/
+      avatar: https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=3174053538,1868814944&fm=26&gp=0.jpg
+      descr: 哥谭市黑暗策划

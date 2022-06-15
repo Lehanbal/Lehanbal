@@ -30,7 +30,7 @@ categories:
 
 ## 实际的GC过程
 
-![image-20201103211825342](https://gitee.com/lehanbal/blog-image/raw/master/img/image-20201103211825342.png)
+![image-20201103211825342](http://cdn.lehanbal.top/image-20201103211825342.png)
 
 1. 将内存进行了划分，划分为新生代（young）和老年代（old）。
 

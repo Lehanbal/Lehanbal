@@ -13,11 +13,11 @@ Redis客户端可以订阅任意数量的频道。
 
 订阅频道：
 
-![image-20201118183513237](https://gitee.com/lehanbal/blog-image/raw/master/img/image-20201118183513237.png)
+![image-20201118183513237](http://cdn.lehanbal.top/image-20201118183513237.png)
 
 当有新消息通过 PUBLISH 命令发送给频道 channel1 时：
 
-![image-20201118183529589](https://gitee.com/lehanbal/blog-image/raw/master/img/image-20201118183529589.png)
+![image-20201118183529589](http://cdn.lehanbal.top/image-20201118183529589.png)
 
 ## 示例：
 

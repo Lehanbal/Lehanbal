@@ -57,25 +57,25 @@ PriorityQueue是一个优先级队列，也就是说他会按照一定的规律�
 
 先是随便整个完全二叉树
 
-![大顶堆](https://gitee.com/lehanbal/blog-image/raw/master/img/大顶堆.png)
+![大顶堆](http://cdn.lehanbal.top/%E5%A4%A7%E9%A1%B6%E5%A0%86.png)
 
 好！他很乱！
 
 从底部开始！
 
-![大顶堆的子节点](https://gitee.com/lehanbal/blog-image/raw/master/img/大顶堆的子节点.png)
+![大顶堆的子节点](http://cdn.lehanbal.top/%E5%A4%A7%E9%A1%B6%E5%A0%86%E7%9A%84%E5%AD%90%E8%8A%82%E7%82%B9.png)
 
 给他按照相关规则排序！
 
-![大顶堆排序1](https://gitee.com/lehanbal/blog-image/raw/master/img/大顶堆排序1.png)
+![大顶堆排序1](http://cdn.lehanbal.top/%E5%A4%A7%E9%A1%B6%E5%A0%86%E6%8E%92%E5%BA%8F1.png)
 
 好！该节点完事，下一个节点！
 
-![大顶堆的子节点1](https://gitee.com/lehanbal/blog-image/raw/master/img/大顶堆的子节点1.png)
+![大顶堆的子节点1](http://cdn.lehanbal.top/%E5%A4%A7%E9%A1%B6%E5%A0%86%E7%9A%84%E5%AD%90%E8%8A%82%E7%82%B91.png)
 
 继续排序！
 
-![大顶堆排序2](https://gitee.com/lehanbal/blog-image/raw/master/img/大顶堆排序2.png)
+![大顶堆排序2](http://cdn.lehanbal.top/%E5%A4%A7%E9%A1%B6%E5%A0%86%E6%8E%92%E5%BA%8F2.png)
 
 排序完毕。
 

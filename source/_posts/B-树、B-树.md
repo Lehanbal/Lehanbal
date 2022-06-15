@@ -17,7 +17,7 @@ categories:
 
 先别看规则，向上个图，感受一下。
 
-![2-3树](https://gitee.com/lehanbal/blog-image/raw/master/img/2-3树.png)
+![2-3树](http://cdn.lehanbal.top/2-3%E6%A0%91.png)
 
 2-3的节点规则：
 
@@ -41,21 +41,21 @@ categories:
 
    如果未命中元素，并且是在2-节点结束的，那就把当前的2-节点变成3-节点，并且把插入的元素加进去即可。
 
-   ![2-3树插入情况1](https://gitee.com/lehanbal/blog-image/raw/master/img/2-3树插入情况1.png)
+   ![2-3树插入情况1](http://cdn.lehanbal.top/2-3%E6%A0%91%E6%8F%92%E5%85%A5%E6%83%85%E5%86%B51.png)
 
 2. 向一个父节点是2-节点的3-节点插入元素
 
    将3-节点临时变成4-节点，然后将中间节点抽出分解成3个2-节点，将中间节点向上合并，完成插入操作。
 
-   ![2-3树插入情况2](D:%5CWorkspace%5Cgitbook%5Crecord_source_code%5CJava%5CB%E6%A0%91%E3%80%81B+%E6%A0%91%5C2-3%E6%A0%91%E6%8F%92%E5%85%A5%E6%83%85%E5%86%B52.png)
+   ![2-3树插入情况2](http://cdn.lehanbal.top/2-3%E6%A0%91%E6%8F%92%E5%85%A5%E6%83%85%E5%86%B52.png)
 
 3. 向一个父节点是3-节点的3-节点插入元素
 
    插入元素的时候，先临时变成4-节点，然后把它分解了，将中间的元素向上合并，父节点继续变成4-节点，再分解，中间的元素再向上合并。知道遇到2-节点，把2-节点变成3-节点，此时便不再分解。**如果根节点分解了，那么树高+1**。
 
-   ![2-3树插入情况3.1](https://gitee.com/lehanbal/blog-image/raw/master/img/2-3树插入情况3.1.png)
+   ![2-3树插入情况3.1](http://cdn.lehanbal.top/2-3%E6%A0%91%E6%8F%92%E5%85%A5%E6%83%85%E5%86%B53.1.png)
 
-![2-3树插入情况3.2](https://gitee.com/lehanbal/blog-image/raw/master/img/2-3树插入情况3.2.png)
+![2-3树插入情况3.2](http://cdn.lehanbal.top/2-3%E6%A0%91%E6%8F%92%E5%85%A5%E6%83%85%E5%86%B53.2.png)
 
 ### 2-3树删除元素
 
@@ -65,23 +65,22 @@ categories:
 
 1. 删除的节点不是2-节点，这种情况可以直接删除，将3-节点删除其中一个元素使它转换成2-节点。
 
-   ![2-3树删除情况1](https://gitee.com/lehanbal/blog-image/raw/master/img/2-3树删除情况1.png)
+   ![2-3树删除情况1](http://cdn.lehanbal.top/2-3%E6%A0%91%E5%88%A0%E9%99%A4%E6%83%85%E5%86%B51.png)
 
 2. 删除的节点是2-节点，父节点是2-节点，兄弟节点是3-节点，这种时候删除节点后将父节点移动到被删除节点的位置然后将兄弟节点中最接近父节点的值移动到父节点的位置。（左旋）
 
-   ![](https://gitee.com/lehanbal/blog-image/raw/master/img/2-3树删除情况2.png)
+   ![2-3树删除情况2](http://cdn.lehanbal.top/2-3%E6%A0%91%E5%88%A0%E9%99%A4%E6%83%85%E5%86%B52.png)
 
 3. 删除的节点是2-节点，兄弟节点也是2-节点，（不是满二叉树）这时候我们需要将父节点的父节点的直接后继拆分来顶替父节点的位置，然后父节点与兄弟节点结合从3-节点，进行左旋操作即可。
 
-   ![2-3树删除情况3](https://gitee.com/lehanbal/blog-image/raw/master/img/2-3树删除情况3.png)
+   ![2-3树删除情况3](http://cdn.lehanbal.top/2-3%E6%A0%91%E5%88%A0%E9%99%A4%E6%83%85%E5%86%B53.png)
 
 4. 删除的节点是2-节点，父节点是3-节点，那么我们需要将父节点拆成两个2-节点，然后将父节点中最接近的一个元素与孩子结合，合并成一个3-节点。
 
-   ![2-3树删除情况4](https://gitee.com/lehanbal/blog-image/raw/master/img/2-3树删除情况4.png)
+   ![2-3树删除情况4](http://cdn.lehanbal.top/2-3%E6%A0%91%E5%88%A0%E9%99%A4%E6%83%85%E5%86%B54.png)
 
 5. 删除的是一个满二叉树的叶子节点，这个时候，就开始降维打击了，将删除节点的兄弟节点与父节点结合成3-节点，父节点的所有兄弟节点合并到父节点的都节点中，如果生成4-节点，那就拆分4-节点即可。
 
-   ![2-3树插入情况5](https://gitee.com/lehanbal/blog-image/raw/master/img/2-3树插入情况5.png)
 
 ## B-树
 
@@ -122,9 +121,7 @@ B+树的查找与B树不同，当索引部分某个结点的关键字与所查�
 
 上个图，体会一下：
 
-![B+树](https://gitee.com/lehanbal/blog-image/raw/master/img/B+树.png)
-
-
+![B+树](http://cdn.lehanbal.top/B+%E6%A0%91.png)
 
 因为B+树的非叶子节点并没有存储数据，所以一个磁盘页可以存储更多的数据，也就是说，B+树会比B-树更加矮胖，所以查询IO次数更少，查询速度也就更快。
 

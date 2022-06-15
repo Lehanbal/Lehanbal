@@ -190,4 +190,4 @@ public class LRUCache {
     }
 ```
 
-![image-20201030234723878](https://gitee.com/lehanbal/blog-image/raw/master/img/image-20201030234723878.png)
+![image-20201030234723878](http://cdn.lehanbal.top/image-20201030234723878.png)

@@ -17,7 +17,7 @@ categories:
 
 继承关系如下图：
 
-![继承关系](https://gitee.com/lehanbal/blog-image/raw/master/img/继承关系.png)
+![继承关系](http://cdn.lehanbal.top/%E7%BB%A7%E6%89%BF%E5%85%B3%E7%B3%BB.png)
 
 学习一个类，就从它的父类进行学习，所以我们从它的继承关系来看
 
@@ -65,7 +65,7 @@ Queue、Stack以及Deque各个接口的方法对比
 
 线性数组与循环数组插入元素地区别图：**（注意头指针和尾指针的位置！头指针指向的是第一个元素，尾指针则是指向最后一个元素的后一位）**
 
-![线性数组与循环数组](https://gitee.com/lehanbal/blog-image/raw/master/img/线性数组与循环数组.png)
+![线性数组与循环数组](http://cdn.lehanbal.top/%E7%BA%BF%E6%80%A7%E6%95%B0%E7%BB%84%E4%B8%8E%E5%BE%AA%E7%8E%AF%E6%95%B0%E7%BB%84.png)
 
 ### 源码
 
@@ -258,11 +258,11 @@ newCapacity：（这个函数是用来判断边界条件以及溢出处理的）
 
 该集合的元素存储结构也可以形象的表示为以下图：
 
-![LinkedList逻辑存储图](https://gitee.com/lehanbal/blog-image/raw/master/img/LinkedList逻辑存储图.png)
+![LinkedList逻辑存储图](http://cdn.lehanbal.top/LinkedList%E9%80%BB%E8%BE%91%E5%AD%98%E5%82%A8%E5%9B%BE.png)
 
 它的继承关系如下图：
 
-![LinkedList](https://gitee.com/lehanbal/blog-image/raw/master/img/LinkedList.png)
+![LinkedList](http://cdn.lehanbal.top/LinkedList.png)
 
 我们能看到*LinkedList*实现了Deque和List接口，那么*LinkedList*就具备了list和deque两个接口的属性，list能够通过下标进行索引访问，deque在前面也介绍了，能够实现双向队列（同样能够当作栈或者队列来使用）。
 
@@ -361,7 +361,7 @@ linkBefore：
 
 整体步骤如下图：
 
-![LinkedList加入新元素的步骤](https://gitee.com/lehanbal/blog-image/raw/master/img/LinkedList加入新元素的步骤.png)
+![LinkedList加入新元素的步骤](http://cdn.lehanbal.top/LinkedList%E5%8A%A0%E5%85%A5%E6%96%B0%E5%85%83%E7%B4%A0%E7%9A%84%E6%AD%A5%E9%AA%A4.png)
 
 #### 删
 
@@ -490,7 +490,7 @@ unlinkLast
 
 删除过程的逻辑图：
 
-![LinkedList断开过程](https://gitee.com/lehanbal/blog-image/raw/master/img/LinkedList断开过程.png)
+![LinkedList断开过程](http://cdn.lehanbal.top/LinkedList%E6%96%AD%E5%BC%80%E8%BF%87%E7%A8%8B.png)
 
 #### 查
 

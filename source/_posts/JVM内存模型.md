@@ -20,7 +20,7 @@ JVM内存模型分为5个区：
 4. 堆
 5. 方法区（元空间）
 
-![image-20201103174600198](https://gitee.com/lehanbal/blog-image/raw/master/img/image-20201103174600198.png)
+![image-20201103174600198](http://cdn.lehanbal.top/image-20201103174600198.png)
 
 ## 各区域的作用
 

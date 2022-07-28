@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 5.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.ico">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://unpkg.com/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" integrity="sha256-DfWjNxDkM94fVBWx1H5BMMp0Zq7luBlV8QRcSES7s+0=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://unpkg.com/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://unpkg.com/pace-js@1.2.4/themes/yellow/pace-theme-bounce.css">
+  <script src="https://unpkg.com/pace-js@1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"lehanbal.top","root":"/","images":"/images","scheme":"Mist","darkmode":false,"version":"8.12.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac"},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="数组数组类型：  数组 vector C++ vector 使用详解_Tyler_Zx的博客-CSDN博客_c++ vector  声明 数组  &#x2F;&#x2F;变量类型 变量名[数组大小]int a[n];&#x2F;&#x2F;可以直接进行初始化赋值，未进行赋值的都会使用0作为初始化int a[5] &#x3D; &amp;#123;1, 2, 3&amp;#125;;&#x2F;&#x2F;a[3] &#x3D; 0   vector  &#x2F;&#x2F;需要引入头文件#include &amp;q">
+<meta property="og:type" content="article">
+<meta property="og:title" content="C++数据结构用法笔记">
+<meta property="og:url" content="https://lehanbal.top/2022/03/26/C-%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%94%A8%E6%B3%95%E7%AC%94%E8%AE%B0/index.html">
+<meta property="og:site_name" content="Take it ez">
+<meta property="og:description" content="数组数组类型：  数组 vector C++ vector 使用详解_Tyler_Zx的博客-CSDN博客_c++ vector  声明 数组  &#x2F;&#x2F;变量类型 变量名[数组大小]int a[n];&#x2F;&#x2F;可以直接进行初始化赋值，未进行赋值的都会使用0作为初始化int a[5] &#x3D; &amp;#123;1, 2, 3&amp;#125;;&#x2F;&#x2F;a[3] &#x3D; 0   vector  &#x2F;&#x2F;需要引入头文件#include &amp;q">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-03-26T11:52:00.000Z">
+<meta property="article:modified_time" content="2022-07-28T05:08:41.923Z">
+<meta property="article:author" content="Lehanbal">
+<meta property="article:tag" content="数据结构">
+<meta property="article:tag" content="C++">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://lehanbal.top/2022/03/26/C-%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%94%A8%E6%B3%95%E7%AC%94%E8%AE%B0/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://lehanbal.top/2022/03/26/C-%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%94%A8%E6%B3%95%E7%AC%94%E8%AE%B0/","path":"2022/03/26/C-数据结构用法笔记/","title":"C++数据结构用法笔记"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>C++数据结构用法笔记 | Take it ez</title>
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Take it ez</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">lehanbal's blog</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E7%BB%84"><span class="nav-number">1.</span> <span class="nav-text">数组</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A3%B0%E6%98%8E"><span class="nav-number">1.1.</span> <span class="nav-text">声明</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%81%8D%E5%8E%86"><span class="nav-number">1.2.</span> <span class="nav-text">遍历</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%A0%E9%99%A4"><span class="nav-number">1.3.</span> <span class="nav-text">删除</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MAP"><span class="nav-number">2.</span> <span class="nav-text">MAP</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A3%B0%E6%98%8E-1"><span class="nav-number">2.1.</span> <span class="nav-text">声明</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%81%8D%E5%8E%86-1"><span class="nav-number">2.2.</span> <span class="nav-text">遍历</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8F%92%E5%85%A5"><span class="nav-number">2.3.</span> <span class="nav-text">插入</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%A0%E9%99%A4-1"><span class="nav-number">2.4.</span> <span class="nav-text">删除</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SET"><span class="nav-number">3.</span> <span class="nav-text">SET</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A3%B0%E6%98%8E-2"><span class="nav-number">3.1.</span> <span class="nav-text">声明</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%81%8D%E5%8E%86-2"><span class="nav-number">3.2.</span> <span class="nav-text">遍历</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8F%92%E5%85%A5-1"><span class="nav-number">3.3.</span> <span class="nav-text">插入</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%A0%E9%99%A4-2"><span class="nav-number">3.4.</span> <span class="nav-text">删除</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8E%92%E5%BA%8F"><span class="nav-number">3.5.</span> <span class="nav-text">排序</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Lehanbal"
+      src="/images/avatar.png">
+  <p class="site-author-name" itemprop="name">Lehanbal</p>
+  <div class="site-description" itemprop="description">Just do it!</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">25</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/lehanbal" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;lehanbal" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:huai1230@qq.com" title="E-Mail → mailto:huai1230@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/lehanbal" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://lehanbal.top/2022/03/26/C-%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%94%A8%E6%B3%95%E7%AC%94%E8%AE%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="Lehanbal">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Take it ez">
+      <meta itemprop="description" content="Just do it!">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="C++数据结构用法笔记 | Take it ez">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          C++数据结构用法笔记
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-03-26 19:52:00" itemprop="dateCreated datePublished" datetime="2022-03-26T19:52:00+08:00">2022-03-26</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2022-07-28 13:08:41" itemprop="dateModified" datetime="2022-07-28T13:08:41+08:00">2022-07-28</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/C/" itemprop="url" rel="index"><span itemprop="name">C++</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h2 id="数组"><a href="#数组" class="headerlink" title="数组"></a>数组</h2><p>数组类型：</p>
+<ol>
+<li>数组</li>
+<li>vector <a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_38289815/article/details/105896622">C++ vector 使用详解_Tyler_Zx的博客-CSDN博客_c++ vector</a></li>
+</ol>
+<h3 id="声明"><a href="#声明" class="headerlink" title="声明"></a>声明</h3><ol>
+<li>数组</li>
+</ol>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="comment">//变量类型 变量名[数组大小]</span></span><br><span class="line"><span class="keyword">int</span> a[n];</span><br><span class="line"></span><br><span class="line"><span class="comment">//可以直接进行初始化赋值，未进行赋值的都会使用0作为初始化</span></span><br><span class="line"><span class="keyword">int</span> a[<span class="number">5</span>] = &#123;<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>&#125;;<span class="comment">//a[3] = 0</span></span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>vector</li>
+</ol>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="comment">//需要引入头文件</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&quot;vector&quot;</span></span></span><br><span class="line"><span class="comment">//- vector():创建一个空vector</span></span><br><span class="line">vector&lt;<span class="keyword">int</span>&gt; arr1;</span><br><span class="line"><span class="built_in">printf</span>(<span class="string">&quot;%d\n&quot;</span>, arr1.<span class="built_in">size</span>());</span><br><span class="line"><span class="comment">//- vector(int nSize):创建一个vector,元素个数为nSize</span></span><br><span class="line"><span class="function">vector&lt;<span class="keyword">int</span>&gt; <span class="title">arr2</span><span class="params">(<span class="number">10</span>)</span></span>;</span><br><span class="line"><span class="comment">//- vector(int nSize,const t&amp; t):创建一个vector，元素个数为nSize,且值均为t</span></span><br><span class="line"><span class="function">vector&lt;<span class="keyword">int</span>&gt; <span class="title">arr3</span><span class="params">(<span class="number">10</span>, <span class="number">1</span>)</span></span>;</span><br><span class="line"><span class="comment">//- vector(const vector&amp;):复制构造函数</span></span><br><span class="line"><span class="function">vector&lt;<span class="keyword">int</span>&gt; <span class="title">arr4</span><span class="params">(<span class="number">5</span>, <span class="number">2</span>)</span></span>;</span><br><span class="line"><span class="function">vector&lt;<span class="keyword">int</span>&gt; <span class="title">arr5</span><span class="params">(arr4)</span></span>;</span><br><span class="line"><span class="comment">//- vector(begin,end):复制[begin,end)区间内另一个数组的元素到vector中</span></span><br><span class="line"><span class="keyword">int</span> tmpArr[<span class="number">5</span>] &#123;<span class="number">2</span>, <span class="number">5</span>, <span class="number">4</span>,<span class="number">3</span>,<span class="number">2</span>&#125;;</span><br><span class="line"><span class="function">vector&lt;<span class="keyword">int</span>&gt; <span class="title">arr6</span><span class="params">(tmpArr + <span class="number">2</span>, tmpArr + <span class="number">4</span>)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<h3 id="遍历"><a href="#遍历" class="headerlink" title="遍历"></a>遍历</h3><ol>
+<li>数组</li>
+</ol>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> tmp[<span class="number">5</span>] = &#123;<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>&#125;;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//auto</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">auto</span> i : tmp) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;%d\n&quot;</span>, i);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//for sizeof函数计算地址</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i  = <span class="number">0</span>; i &lt; <span class="built_in"><span class="keyword">sizeof</span></span> (tmp) / <span class="built_in"><span class="keyword">sizeof</span></span> (tmp[<span class="number">0</span>]); i++) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;%d\n&quot;</span>, tmp[i]);</span><br><span class="line">	   &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//库函数strlen 但是只适用字符串数组</span></span><br><span class="line">    <span class="comment">//for (int i  = 0; i &lt; strlen(tmp); i++) &#123;</span></span><br><span class="line">    <span class="comment">//    printf(&quot;%d\n&quot;, tmp[i]);</span></span><br><span class="line">	   <span class="comment">//&#125;</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>vector</li>
+</ol>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="comment">//下标访问</span></span><br><span class="line">vector&lt;<span class="keyword">int</span>&gt; list;</span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; list.<span class="built_in">size</span>(); i++) &#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%d\n&quot;</span>, list[i]);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//迭代器访问</span></span><br><span class="line">vector&lt;string&gt; tmp = &#123; <span class="string">&quot;1&quot;</span>,<span class="string">&quot;2&quot;</span>,<span class="string">&quot;3&quot;</span>,<span class="string">&quot;4&quot;</span>,<span class="string">&quot;5&quot;</span> &#125;;</span><br><span class="line"><span class="keyword">for</span> (vector&lt;string&gt;::iterator iter = tmp.<span class="built_in">begin</span>(); iter != tmp.<span class="built_in">end</span>(); iter++)</span><br><span class="line">&#123;</span><br><span class="line">	cout &lt;&lt; *iter &lt;&lt; endl;</span><br><span class="line">	<span class="comment">//下面两种方法都都可以检查迭代器是否为空</span></span><br><span class="line">	cout &lt;&lt; (*iter).<span class="built_in">empty</span>() &lt;&lt; endl;</span><br><span class="line">	cout &lt;&lt; iter-&gt;<span class="built_in">empty</span>() &lt;&lt; endl; </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//迭代器逆序访问</span></span><br><span class="line"><span class="keyword">for</span> (vector&lt;string&gt;::reverse_iterator iter = tmp.<span class="built_in">rbegin</span>(); iter != tmp.<span class="built_in">rend</span>(); iter++)</span><br><span class="line">&#123;</span><br><span class="line">	cout &lt;&lt; *iter &lt;&lt; endl;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="删除"><a href="#删除" class="headerlink" title="删除"></a>删除</h3><ol>
+<li>删除最后一个元素pop_back()</li>
+</ol>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    vector&lt;<span class="keyword">int</span>&gt;demo&#123; <span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span> &#125;;</span><br><span class="line">    demo.<span class="built_in">pop_back</span>();</span><br><span class="line">    <span class="comment">//输出 dmeo 容器新的size</span></span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;size is :&quot;</span> &lt;&lt; demo.<span class="built_in">size</span>() &lt;&lt; endl;</span><br><span class="line">    <span class="comment">//输出 demo 容器新的容量</span></span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;capacity is :&quot;</span> &lt;&lt; demo.<span class="built_in">capacity</span>() &lt;&lt; endl;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; demo.<span class="built_in">size</span>(); i++) &#123;</span><br><span class="line">        cout &lt;&lt; demo[i] &lt;&lt; <span class="string">&quot; &quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* 结果</span></span><br><span class="line"><span class="comment">size is :4</span></span><br><span class="line"><span class="comment">capacity is :5</span></span><br><span class="line"><span class="comment">1 2 3 4</span></span><br><span class="line"><span class="comment">*/</span></span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>指定删除一个元素erase(position)</li>
+</ol>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    vector&lt;<span class="keyword">int</span>&gt;demo&#123; <span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span> &#125;;</span><br><span class="line">    <span class="keyword">auto</span> iter = demo.<span class="built_in">erase</span>(demo.<span class="built_in">begin</span>() + <span class="number">1</span>);<span class="comment">//删除元素 2</span></span><br><span class="line">    <span class="comment">//输出 dmeo 容器新的size</span></span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;size is :&quot;</span> &lt;&lt; demo.<span class="built_in">size</span>() &lt;&lt; endl;</span><br><span class="line">    <span class="comment">//输出 demo 容器新的容量</span></span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;capacity is :&quot;</span> &lt;&lt; demo.<span class="built_in">capacity</span>() &lt;&lt; endl;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; demo.<span class="built_in">size</span>(); i++) &#123;</span><br><span class="line">        cout &lt;&lt; demo[i] &lt;&lt; <span class="string">&quot; &quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//iter迭代器指向元素 3</span></span><br><span class="line">    cout &lt;&lt; endl &lt;&lt; *iter &lt;&lt; endl;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* 结果</span></span><br><span class="line"><span class="comment">size is :4</span></span><br><span class="line"><span class="comment">capacity is :5</span></span><br><span class="line"><span class="comment">1 3 4 5</span></span><br><span class="line"><span class="comment">3</span></span><br><span class="line"><span class="comment">最终容器大小减1，且从被删除的位置后面的元素向前挪一个位置</span></span><br><span class="line"><span class="comment">*/</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="MAP"><a href="#MAP" class="headerlink" title="MAP"></a>MAP</h2><p>我们可以使用map存储这类一对一的数据：</p>
+<p>第一个可以称为关键字(key)，每个关键字只能在map中出现一次；</p>
+<p>第二个可能称为该关键字的值(value)；</p>
+<p>另外需要注意的是，使用 map 容器存储的各个键-值对，键的值既不能重复也不能被修改。换句话说，map 容器中存储的各个键值对不仅键的值独一无二，键的类型也会用 const 修饰，这意味着只要键值对被存储到 map 容器中，其键的值将不能再做任何修改。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">　　	 begin()          <span class="comment">#返回指向map头部的迭代器</span></span><br><span class="line">　	　clear()          <span class="comment">#删除所有元素</span></span><br><span class="line">count()          <span class="comment">#返回指定元素出现的次数</span></span><br><span class="line">empty()          <span class="comment">#如果map为空则返回true</span></span><br><span class="line">end()            <span class="comment">#返回指向map末尾的迭代器</span></span><br><span class="line">equal_range()    <span class="comment">#返回特殊条目的迭代器对</span></span><br><span class="line">erase()          <span class="comment">#删除一个元素</span></span><br><span class="line">find()           <span class="comment">#查找一个元素</span></span><br><span class="line">get_allocator()  <span class="comment">#返回map的配置器</span></span><br><span class="line">insert()         <span class="comment">#插入元素</span></span><br><span class="line">key_comp()       <span class="comment">#返回比较元素key的函数</span></span><br><span class="line">lower_bound()    <span class="comment">#返回键值&gt;=给定元素的第一个位置</span></span><br><span class="line">max_size()       <span class="comment">#返回可以容纳的最大元素个数</span></span><br><span class="line">rbegin()         <span class="comment">#返回一个指向map尾部的逆向迭代器</span></span><br><span class="line">rend()           <span class="comment">#返回一个指向map头部的逆向迭代器</span></span><br><span class="line">size()           <span class="comment">#返回map中元素的个数</span></span><br><span class="line">swap()           <span class="comment">#交换两个map</span></span><br><span class="line">upper_bound()    <span class="comment">#返回键值&gt;给定元素的第一个位置</span></span><br><span class="line">value_comp()     <span class="comment">#返回比较元素value的函数</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="声明-1"><a href="#声明-1" class="headerlink" title="声明"></a>声明</h3><ol>
+<li><p>引入头文件</p>
+<p><code>#include &lt;map&gt;</code> </p>
+</li>
+<li><p>声明与赋值</p>
+</li>
+</ol>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;map&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">//初始化一</span></span><br><span class="line">	map&lt;string, <span class="keyword">int</span>&gt;myMap&#123; &#123;<span class="string">&quot;a&quot;</span>,<span class="number">1</span>&#125;,&#123;<span class="string">&quot;b&quot;</span>,<span class="number">2</span>&#125; &#125;;</span><br><span class="line">    <span class="comment">//初始化二</span></span><br><span class="line">    map&lt;<span class="keyword">int</span>, <span class="keyword">int</span>&gt; _map;</span><br><span class="line">    _map[<span class="number">0</span>] = <span class="number">1</span>;</span><br><span class="line">    _map[<span class="number">1</span>] = <span class="number">2</span>;</span><br><span class="line">    _map[<span class="number">2</span>] = <span class="number">3</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//若是map&lt;string, string&gt; _map，赋值方式也一样</span></span><br><span class="line">    <span class="comment">//_map[&quot;123&quot;] = &quot;324&quot;;</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="遍历-1"><a href="#遍历-1" class="headerlink" title="遍历"></a>遍历</h3><figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;map&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    map&lt;<span class="keyword">int</span>, <span class="keyword">int</span>&gt; _map;</span><br><span class="line">    _map[<span class="number">0</span>] = <span class="number">1</span>;</span><br><span class="line">    _map[<span class="number">1</span>] = <span class="number">2</span>;</span><br><span class="line">    _map[<span class="number">2</span>] = <span class="number">3</span>;</span><br><span class="line"></span><br><span class="line">    map&lt;<span class="keyword">int</span>, <span class="keyword">int</span>&gt;::iterator iter;</span><br><span class="line">    iter = _map.<span class="built_in">begin</span>();</span><br><span class="line">    <span class="keyword">while</span> (iter != _map.<span class="built_in">end</span>()) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;%d : %d\n&quot;</span>, iter-&gt;first, iter-&gt;second);</span><br><span class="line">        iter++;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (iter = _map.<span class="built_in">begin</span>(); iter != _map.<span class="built_in">end</span>(); iter++)&#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;%d : %d\n&quot;</span>, iter-&gt;first, iter-&gt;second);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//访问一个值</span></span><br><span class="line">    <span class="keyword">int</span> val = _map[<span class="number">1</span>];</span><br><span class="line">    <span class="comment">//如果访问不存在的值,如果是基本数据类型则为0，如果是string类型，则为&quot;&quot;空字符串</span></span><br><span class="line">    <span class="keyword">int</span> val1 = _map[<span class="number">4</span>];</span><br><span class="line">    <span class="comment">//val1 = 0;</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="插入"><a href="#插入" class="headerlink" title="插入"></a>插入</h3><p>插入元素很简单，可以直接使用<code>[]</code>来完成元素的插入</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="comment">//如初始化上    </span></span><br><span class="line"><span class="comment">//初始化一</span></span><br><span class="line">map&lt;string, <span class="keyword">int</span>&gt;myMap&#123; &#123;<span class="string">&quot;a&quot;</span>,<span class="number">1</span>&#125;,&#123;<span class="string">&quot;b&quot;</span>,<span class="number">2</span>&#125; &#125;;</span><br><span class="line">   <span class="comment">//初始化二</span></span><br><span class="line">   map&lt;<span class="keyword">int</span>, <span class="keyword">int</span>&gt; _map;</span><br><span class="line">   _map[<span class="number">0</span>] = <span class="number">1</span>;</span><br><span class="line">   _map[<span class="number">1</span>] = <span class="number">2</span>;</span><br><span class="line">   _map[<span class="number">2</span>] = <span class="number">3</span>;</span><br><span class="line">   </span><br><span class="line">   <span class="comment">//若是map&lt;string, string&gt; _map，赋值方式也一样</span></span><br><span class="line">   <span class="comment">//_map[&quot;123&quot;] = &quot;324&quot;;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="删除-1"><a href="#删除-1" class="headerlink" title="删除"></a>删除</h3><figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="comment">//删除键为bfff指向的元素</span></span><br><span class="line">cmap.<span class="built_in">erase</span>(<span class="string">&quot;bfff&quot;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">//删除迭代器 key所指向的元素</span></span><br><span class="line"><span class="comment">//find(key)返回的是迭代器</span></span><br><span class="line">map&lt;string,<span class="keyword">int</span>&gt;::iterator key = cmap.<span class="built_in">find</span>(<span class="string">&quot;mykey&quot;</span>);</span><br><span class="line"><span class="keyword">if</span>(key!=cmap.<span class="built_in">end</span>())</span><br><span class="line">&#123;</span><br><span class="line">    cmap.<span class="built_in">erase</span>(key);</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"><span class="comment">//删除所有元素</span></span><br><span class="line">cmap.<span class="built_in">erase</span>(cmap.<span class="built_in">begin</span>(),cmap.<span class="built_in">end</span>());</span><br></pre></td></tr></table></figure>
+
+<h2 id="SET"><a href="#SET" class="headerlink" title="SET"></a>SET</h2><p>所有元素都会在插入时自动被排序<br>set/multiset属于关联式容器，底层结构是用二叉树实现。<br><strong>set和multiset区别:</strong><br>●set不允许容器中有重复的元素<br>●multiset允许容器中有 重复的元素</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment">#交换两个set集合</span></span><br><span class="line">swap(<span class="built_in">set</span>)</span><br><span class="line"><span class="comment">#判断set是否为空</span></span><br><span class="line">empty()</span><br><span class="line"><span class="comment">#集合大小</span></span><br><span class="line">size()</span><br></pre></td></tr></table></figure>
+
+<h3 id="声明-2"><a href="#声明-2" class="headerlink" title="声明"></a>声明</h3><ol>
+<li><p>引入头文件 </p>
+<p><code> #include &lt;set&gt;</code></p>
+</li>
+<li><p>构造</p>
+</li>
+</ol>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">set&lt;<span class="keyword">int</span>&gt; tmp;</span><br><span class="line">set&lt;<span class="keyword">int</span>&gt; tmp&#123;<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>&#125;;</span><br></pre></td></tr></table></figure>
+
+<h3 id="遍历-2"><a href="#遍历-2" class="headerlink" title="遍历"></a>遍历</h3><figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;set&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    set&lt;<span class="keyword">int</span>&gt; tmp&#123;<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>&#125;;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">auto</span> i = tmp.<span class="built_in">begin</span>(); i != tmp.<span class="built_in">end</span>(); i++) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;%d\n&quot;</span>, *i);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="插入-1"><a href="#插入-1" class="headerlink" title="插入"></a>插入</h3><p>关键函数：insert(elem);</p>
+<p>int count(elem);可以判断是否有相关元素，返回0或1；</p>
+<p>find(elem);返回该元素位置的迭代器</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">set&lt;<span class="keyword">int</span>&gt;s1;</span><br><span class="line"><span class="comment">//插入数据,插入队尾</span></span><br><span class="line"> 	s1.<span class="built_in">insert</span>(<span class="number">10</span>);</span><br><span class="line"> 	s1.<span class="built_in">insert</span>(<span class="number">20</span>);</span><br><span class="line">	s1.<span class="built_in">insert</span>(<span class="number">30</span>);</span><br><span class="line">	s1.<span class="built_in">insert</span>(<span class="number">40</span>);</span><br><span class="line"><span class="comment">//同样可以给定迭代器位置，插入到对应元素的后面(set会自己排序，所以这个插到对应位置没意义)</span></span><br><span class="line">s1.<span class="built_in">insert</span>(s1.<span class="built_in">find</span>(<span class="number">10</span>),<span class="number">15</span>);</span><br></pre></td></tr></table></figure>
+
+<h3 id="删除-2"><a href="#删除-2" class="headerlink" title="删除"></a>删除</h3><p>关键函数：earse();</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="comment">//删除30这个元素</span></span><br><span class="line">s1.<span class="built_in">erase</span>(<span class="number">30</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">//清空set</span></span><br><span class="line"><span class="comment">//等价s1.earse(s1.begin(),s1.end())</span></span><br><span class="line">s1.<span class="built_in">clear</span>();</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="排序"><a href="#排序" class="headerlink" title="排序"></a>排序</h3><p>将重写了operator 方法的类传入构造中</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="comment">//逆序排列</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">compare1</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">	<span class="function"><span class="keyword">bool</span> <span class="title">operator</span> <span class="params">()</span><span class="params">(<span class="keyword">int</span> v1, <span class="keyword">int</span> v2)</span><span class="keyword">const</span> </span></span><br><span class="line"><span class="function">	</span>&#123;</span><br><span class="line">		<span class="keyword">return</span> v1 &lt; v2;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">set&lt;<span class="keyword">int</span>,compare1&gt;s1</span><br></pre></td></tr></table></figure>
+
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag"># 数据结构</a>
+              <a href="/tags/C/" rel="tag"># C++</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/06/05/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/" rel="prev" title="JAVA设计模式-单例模式">
+                  <i class="fa fa-chevron-left"></i> JAVA设计模式-单例模式
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2022/04/13/OpenGL-%E7%BB%98%E5%88%B6%E7%AC%AC%E4%B8%80%E4%B8%AA%E7%AA%97%E5%8F%A3/" rel="next" title="OpenGL-绘制第一个窗口">
+                  OpenGL-绘制第一个窗口 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">lehanbal</span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://unpkg.com/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="https://unpkg.com/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+  <script src="/js/third-party/pace.js"></script>
+
+  
+
+
+
+
+
+</body>
+</html>

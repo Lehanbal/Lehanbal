@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 5.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.ico">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://unpkg.com/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" integrity="sha256-DfWjNxDkM94fVBWx1H5BMMp0Zq7luBlV8QRcSES7s+0=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://unpkg.com/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://unpkg.com/pace-js@1.2.4/themes/yellow/pace-theme-bounce.css">
+  <script src="https://unpkg.com/pace-js@1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"lehanbal.top","root":"/","images":"/images","scheme":"Mist","darkmode":false,"version":"8.12.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac"},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="在知乎上看到老刘写的红黑树，超强动静图详解，简单易懂，写得真的很棒，所以这里做下学习记录，再翻版一次。 概念在学习红黑树之前，需要先了解以下二叉搜索树（二叉平衡树，二叉排序树都是一个东西）。 二叉搜索树：  某节点的左子树节点值仅包含小于该节点值 某节点的右子树节点值仅包含大于该节点值 左右子树每个也必须是二叉查找树  二叉搜索树查找元素核心的实现就是二分查找，如果要查找的元素比当前节点的值要大就">
+<meta property="og:type" content="article">
+<meta property="og:title" content="什么是红黑树">
+<meta property="og:url" content="https://lehanbal.top/2020/10/29/%E4%BB%80%E4%B9%88%E6%98%AF%E7%BA%A2%E9%BB%91%E6%A0%91/index.html">
+<meta property="og:site_name" content="Take it ez">
+<meta property="og:description" content="在知乎上看到老刘写的红黑树，超强动静图详解，简单易懂，写得真的很棒，所以这里做下学习记录，再翻版一次。 概念在学习红黑树之前，需要先了解以下二叉搜索树（二叉平衡树，二叉排序树都是一个东西）。 二叉搜索树：  某节点的左子树节点值仅包含小于该节点值 某节点的右子树节点值仅包含大于该节点值 左右子树每个也必须是二叉查找树  二叉搜索树查找元素核心的实现就是二分查找，如果要查找的元素比当前节点的值要大就">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://cdn.lehanbal.top/%E4%BA%8C%E5%8F%89%E6%90%9C%E7%B4%A2%E6%A0%91.png">
+<meta property="og:image" content="http://cdn.lehanbal.top/jio%E6%8E%B0%E6%A0%91.png">
+<meta property="og:image" content="http://cdn.lehanbal.top/%E7%BA%A2%E9%BB%91%E6%A0%91.png">
+<meta property="og:image" content="http://cdn.lehanbal.top/%E5%B7%A6%E6%97%8B%E8%BD%AC.png">
+<meta property="og:image" content="http://cdn.lehanbal.top/%E5%8F%B3%E6%97%8B%E8%BD%AC.png">
+<meta property="og:image" content="http://cdn.lehanbal.top/%E5%8F%94%E5%8F%94%E8%8A%82%E7%82%B9%E4%B8%BA%E7%BA%A2%E8%89%B2.png">
+<meta property="og:image" content="http://cdn.lehanbal.top/%E5%B7%A6%E5%B7%A6%E6%83%85%E5%86%B5.png">
+<meta property="og:image" content="http://cdn.lehanbal.top/%E5%B7%A6%E5%8F%B3%E6%83%85%E5%86%B5.png">
+<meta property="og:image" content="http://cdn.lehanbal.top/%E5%8F%B3%E5%8F%B3%E6%83%85%E5%86%B5.png">
+<meta property="og:image" content="http://cdn.lehanbal.top/%E5%8F%B3%E5%B7%A6%E6%83%85%E5%86%B5.png">
+<meta property="og:image" content="http://cdn.lehanbal.top/%E5%88%A0%E9%99%A4%E7%BB%93%E7%82%B9%E6%83%85%E5%86%B52.png">
+<meta property="og:image" content="http://cdn.lehanbal.top/%E5%88%A0%E9%99%A4%E7%BB%93%E7%82%B9%E6%98%AF%E7%BA%A2%E8%89%B2.png">
+<meta property="og:image" content="http://cdn.lehanbal.top/%E5%88%A0%E9%99%A4%E6%83%85%E5%86%B52.1.png">
+<meta property="og:image" content="http://cdn.lehanbal.top/%E5%88%A0%E9%99%A4%E6%83%85%E5%86%B52.2.png">
+<meta property="og:image" content="http://cdn.lehanbal.top/%E5%88%A0%E9%99%A4%E7%BB%93%E7%82%B9%E6%83%85%E5%86%B52.3.png">
+<meta property="og:image" content="http://cdn.lehanbal.top/%E5%88%A0%E9%99%A4%E7%BB%93%E7%82%B9%E6%83%85%E5%86%B52.4.png">
+<meta property="og:image" content="http://cdn.lehanbal.top/%E5%88%A0%E9%99%A4%E7%BB%93%E7%82%B9%E6%83%85%E5%86%B53.png">
+<meta property="og:image" content="https://math.jianshu.com/math?formula=O(lgn)">
+<meta property="og:image" content="https://math.jianshu.com/math?formula=O(n)">
+<meta property="og:image" content="https://math.jianshu.com/math?formula=O(lgn)">
+<meta property="og:image" content="https://math.jianshu.com/math?formula=O(n)">
+<meta property="og:image" content="https://math.jianshu.com/math?formula=O(lgn)">
+<meta property="og:image" content="https://math.jianshu.com/math?formula=O(lgn)">
+<meta property="og:image" content="https://math.jianshu.com/math?formula=O(lgn)">
+<meta property="article:published_time" content="2020-10-29T07:03:07.000Z">
+<meta property="article:modified_time" content="2022-07-28T05:08:41.923Z">
+<meta property="article:author" content="Lehanbal">
+<meta property="article:tag" content="数据结构">
+<meta property="article:tag" content="红黑树">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://cdn.lehanbal.top/%E4%BA%8C%E5%8F%89%E6%90%9C%E7%B4%A2%E6%A0%91.png">
+
+
+<link rel="canonical" href="https://lehanbal.top/2020/10/29/%E4%BB%80%E4%B9%88%E6%98%AF%E7%BA%A2%E9%BB%91%E6%A0%91/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://lehanbal.top/2020/10/29/%E4%BB%80%E4%B9%88%E6%98%AF%E7%BA%A2%E9%BB%91%E6%A0%91/","path":"2020/10/29/什么是红黑树/","title":"什么是红黑树"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>什么是红黑树 | Take it ez</title>
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Take it ez</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">lehanbal's blog</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A6%82%E5%BF%B5"><span class="nav-number">1.</span> <span class="nav-text">概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BA%A2%E9%BB%91%E6%A0%91"><span class="nav-number">2.</span> <span class="nav-text">红黑树</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BA%A2%E9%BB%91%E6%A0%91%E6%8F%92%E5%85%A5%E6%93%8D%E4%BD%9C"><span class="nav-number">2.1.</span> <span class="nav-text">红黑树插入操作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BA%A2%E9%BB%91%E6%A0%91%E5%88%A0%E9%99%A4%E6%93%8D%E4%BD%9C"><span class="nav-number">2.2.</span> <span class="nav-text">红黑树删除操作</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%81%B5%E9%AD%82%E6%8B%B7%E9%97%AE"><span class="nav-number">3.</span> <span class="nav-text">灵魂拷问</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#jdk-1-8-HashMap-%E4%B8%AD%E6%9C%89%E4%BD%BF%E7%94%A8%E5%88%B0%E7%BA%A2%E9%BB%91%E6%A0%91%EF%BC%8C%E4%BD%A0%E7%9F%A5%E9%81%93%E8%A7%A6%E5%8F%91%E6%9D%A1%E4%BB%B6%E6%98%AF%E4%BB%80%E4%B9%88%E5%90%97%EF%BC%9F%E6%9C%89%E8%AF%BB%E8%BF%87%E6%BA%90%E7%A0%81%E6%98%AF%E5%A6%82%E4%BD%95-put-%E5%92%8C-remove-%E7%9A%84%E5%90%97%EF%BC%9F"><span class="nav-number">3.1.</span> <span class="nav-text">jdk 1.8 HashMap 中有使用到红黑树，你知道触发条件是什么吗？有读过源码是如何 put 和 remove 的吗？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%93%AA%E4%BA%9B%E5%9C%BA%E6%99%AF%E5%8F%AF%E4%BB%A5%E5%BA%94%E7%94%A8%E7%BA%A2%E9%BB%91%E6%A0%91%EF%BC%9F"><span class="nav-number">3.2.</span> <span class="nav-text">哪些场景可以应用红黑树？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%A0%E4%BA%86%E8%A7%A3%E5%90%84%E7%A7%8D%E6%A0%91%E7%9A%84%E6%97%B6%E9%97%B4%E5%A4%8D%E6%9D%82%E5%BA%A6%E5%90%97%EF%BC%9F"><span class="nav-number">3.3.</span> <span class="nav-text">你了解各种树的时间复杂度吗？</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Lehanbal"
+      src="/images/avatar.png">
+  <p class="site-author-name" itemprop="name">Lehanbal</p>
+  <div class="site-description" itemprop="description">Just do it!</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">25</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/lehanbal" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;lehanbal" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:huai1230@qq.com" title="E-Mail → mailto:huai1230@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/lehanbal" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://lehanbal.top/2020/10/29/%E4%BB%80%E4%B9%88%E6%98%AF%E7%BA%A2%E9%BB%91%E6%A0%91/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="Lehanbal">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Take it ez">
+      <meta itemprop="description" content="Just do it!">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="什么是红黑树 | Take it ez">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          什么是红黑树
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2020-10-29 15:03:07" itemprop="dateCreated datePublished" datetime="2020-10-29T15:03:07+08:00">2020-10-29</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2022-07-28 13:08:41" itemprop="dateModified" datetime="2022-07-28T13:08:41+08:00">2022-07-28</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" itemprop="url" rel="index"><span itemprop="name">数据结构</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>在知乎上看到老刘写的<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/79980618?utm_source=cn.wiz.note">红黑树，超强动静图详解，简单易懂</a>，写得真的很棒，所以这里做下学习记录，再翻版一次。</p>
+<h2 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h2><p>在学习红黑树之前，需要先了解以下二叉搜索树（二叉平衡树，二叉排序树都是一个东西）。</p>
+<p><strong>二叉搜索树</strong>：</p>
+<ol>
+<li>某节点的左子树节点值仅包含小于该节点值</li>
+<li>某节点的右子树节点值仅包含大于该节点值</li>
+<li>左右子树每个也必须是二叉查找树</li>
+</ol>
+<p>二叉搜索树查找元素核心的实现就是二分查找，如果要查找的元素比当前节点的值要大就去右子树找，如果比当前节点小就去左子树找。一颗合格的二叉搜索树应该长以下的样子。</p>
+<p><img src="http://cdn.lehanbal.top/%E4%BA%8C%E5%8F%89%E6%90%9C%E7%B4%A2%E6%A0%91.png" alt="二叉搜索树"></p>
+<p>题外话：二叉搜索树的中序遍历结果是一个递增序列。</p>
+<p>我们现在知道了二叉搜索树，那么什么是红黑树呢？</p>
+<p>在二叉搜索树插入数据会出现一些比较极端的情况：</p>
+<p><img src="http://cdn.lehanbal.top/jio%E6%8E%B0%E6%A0%91.png" alt="jio掰树"></p>
+<p>这种情况下的二叉搜索树检索检索元素和线性表无异，这棵树太歪了。</p>
+<p>红黑树就是用来解决这类问题的，</p>
+<p>简单地说，红黑树就是会动态的调节根节点的位置，使这棵树趋近左右平衡，让这颗树长得不这么歪。</p>
+<p><img src="http://cdn.lehanbal.top/%E7%BA%A2%E9%BB%91%E6%A0%91.png" alt="红黑树"></p>
+<p>调节过后这就变成了红黑树。</p>
+<h2 id="红黑树"><a href="#红黑树" class="headerlink" title="红黑树"></a>红黑树</h2><p>红黑树，Red-Black Tree 「RBT」是一个自平衡(不是绝对的平衡)的二叉搜索树(BST)，树上的每个节点都遵循下面的规则:</p>
+<p>性质1. 节点是红色或黑色。 </p>
+<p>性质2. 根节点是黑色。 </p>
+<p>性质3. 所有叶子都是黑色。（叶子是NUIL节点） </p>
+<p>性质4. 每个红色节点的两个子节点都是黑色。（从每个叶子到根的所有路径上不能有两个连续的红色节点，<strong>并没有说不能出现连续的黑色节点</strong>）</p>
+<p>性质5. 从任一节点到其每个叶子的所有路径都包含相同数目的黑色节点。</p>
+<p>满足以上条件的二叉搜索树就是一颗红黑树。</p>
+<p>虽然说条件看起来很复杂，我们直接跟着走几个案例试试。</p>
+<p>在走案例之前，我们需要清楚以下操作</p>
+<ul>
+<li>染色</li>
+</ul>
+<p>红黑树以红色和黑色分别标记每个节点的颜色信息，所以我们需要会需要对节点进行重新染色的操作。</p>
+<hr>
+<ul>
+<li>左旋转与右旋转</li>
+</ul>
+<p>个人觉得这就是红黑树的灵魂，就是因为旋转的步骤才保持着满足红黑树的约束条件的同时还能保证最基本的二叉搜索树的约束条件。</p>
+<p>分别上个左旋和右旋的操作（该举例只是为了说明旋转的时候节点的去向，并不代表要转成红黑树需要这么做）</p>
+<p>左旋：<img src="http://cdn.lehanbal.top/%E5%B7%A6%E6%97%8B%E8%BD%AC.png" alt="左旋转"></p>
+<p>右旋：<img src="http://cdn.lehanbal.top/%E5%8F%B3%E6%97%8B%E8%BD%AC.png" alt="右旋转"></p>
+<p><strong>上面的左旋右旋一定看清楚怎么旋转的！</strong></p>
+<p><strong>上面的左旋右旋一定看清楚怎么旋转的！</strong></p>
+<p><strong>上面的左旋右旋一定看清楚怎么旋转的！</strong></p>
+<hr>
+<h3 id="红黑树插入操作"><a href="#红黑树插入操作" class="headerlink" title="红黑树插入操作"></a>红黑树插入操作</h3><p>红黑树插入节点与二叉搜索树的插入方式一致，在二叉搜索树插入节点后，会动态的调整根节点位置。</p>
+<p>在插入结点的时候，我们会考虑先把节点染色，当染色后不能够满足性质4的时候再进行旋转操作。</p>
+<p>算法公式如下：</p>
+<p>假设新插入的节点为x</p>
+<ol>
+<li><p>将新插入的节点标记为红色。</p>
+</li>
+<li><p>如果x是根节点（root），则标记为黑色。</p>
+</li>
+<li><p>如果x的父节点不是黑色，同时x也不是根节点：</p>
+<p>3.1 如果x的叔叔节点是红色</p>
+<p>​    3.1.1 将父节点和叔叔节点标记为黑色</p>
+<p>​    3.1.2 将祖父节点标记为红色</p>
+<p>​    3.1.3 让x节点的颜色与x祖父的颜色相同，然后重复2、3步骤。</p>
+</li>
+</ol>
+<p>上案例！</p>
+<p><img src="http://cdn.lehanbal.top/%E5%8F%94%E5%8F%94%E8%8A%82%E7%82%B9%E4%B8%BA%E7%BA%A2%E8%89%B2.png" alt="叔叔节点为红色"></p>
+<p>​    3.2 如果x的叔叔节点是黑色，就有四种情况需要进行处理</p>
+<p>​        3.2.1 x的父节点是x的祖父节点的左孩子，x是父节点的左孩子，左左关系</p>
+<p>​        3.2.2 x的父节点是x的祖父节点的左孩子，x是父节点的右孩子，左右关系</p>
+<p>​        3.2.3 与3.2.1反过来，镜像，右右关系</p>
+<p>​        3.2.4 与 3.2.2反过来，镜像有，右左关系</p>
+<p><strong>3.2.1 情况：左左关系：</strong></p>
+<p><img src="http://cdn.lehanbal.top/%E5%B7%A6%E5%B7%A6%E6%83%85%E5%86%B5.png" alt="左左情况"></p>
+<p><strong>3.2.2情况：左右关系：</strong></p>
+<p><img src="http://cdn.lehanbal.top/%E5%B7%A6%E5%8F%B3%E6%83%85%E5%86%B5.png" alt="左右情况"></p>
+<p><strong>3.2.3右右情况</strong></p>
+<p><img src="http://cdn.lehanbal.top/%E5%8F%B3%E5%8F%B3%E6%83%85%E5%86%B5.png" alt="右右情况"></p>
+<p><strong>3.2.4右左情况</strong></p>
+<p><img src="http://cdn.lehanbal.top/%E5%8F%B3%E5%B7%A6%E6%83%85%E5%86%B5.png" alt="右左情况"></p>
+<h3 id="红黑树删除操作"><a href="#红黑树删除操作" class="headerlink" title="红黑树删除操作"></a>红黑树删除操作</h3><p>删除操作则是阅读了<a target="_blank" rel="noopener" href="https://blog.csdn.net/m0_37589327/article/details/78518324">该篇博文</a>，讲得是真的好，看了蛮多的红黑树删除操作得视频以及文章只觉得这篇最有价值。</p>
+<p>删除操作就需要将所有情况都穷举一遍，是情况是真的多，但是无论我们怎么操作，我们的唯一的目的就是保持红黑树的平衡。</p>
+<p>要了解红黑树的删除操作，那么就必须要清楚二叉搜索树的删除操作。</p>
+<p>二叉搜索树删除结点会有三种情况出现：</p>
+<ol>
+<li>如果删除的结点是叶子结点，直接删除即可。</li>
+<li>如果删除的结点只有一个结点，直接将父节点的指针指向它的孩子即可。</li>
+<li>如果删除的结点有两个孩子，则可以找它的后继，覆盖它的值，之后情况转变为删除前驱结点或者后继结点，也就是回到（1）和（2）两种情况。</li>
+</ol>
+<p>红黑树删除结点的操作来了：</p>
+<p>情况3解决方案：可以转化为情况2与情况1，所以红黑树的删除操作也就转化为下面得两种大情况。</p>
+<p>情况2解决方案：这种情况待删除的结点一定是黑色，因为红色结点不能只有一个孩子，这会导致红黑树不平衡，并且他的孩子一定是红色。直接使他的孩子替换掉待删除结点的位置并且染色即可。</p>
+<p><img src="http://cdn.lehanbal.top/%E5%88%A0%E9%99%A4%E7%BB%93%E7%82%B9%E6%83%85%E5%86%B52.png" alt="删除结点情况2"></p>
+<p>情况1解决方案：这是最为复杂的情况了。</p>
+<ol>
+<li><p>待删除的结点是红色，删就完事了，不会影响到红黑树平衡。<br><img src="http://cdn.lehanbal.top/%E5%88%A0%E9%99%A4%E7%BB%93%E7%82%B9%E6%98%AF%E7%BA%A2%E8%89%B2.png" alt="删除结点是红色"></p>
+</li>
+<li><p>待删除的结点是黑色，它兄弟是黑色。</p>
+<p>2.1.它兄弟没有孩子，并且它们的爹是红色</p>
+<p><img src="http://cdn.lehanbal.top/%E5%88%A0%E9%99%A4%E6%83%85%E5%86%B52.1.png" alt="删除情况2.1"></p>
+<p>2.2.它兄弟没有孩子，并且它们的爹是黑色</p>
+<p><img src="http://cdn.lehanbal.top/%E5%88%A0%E9%99%A4%E6%83%85%E5%86%B52.2.png" alt="删除情况2.2"></p>
+<p>​        这种情况需要注意，因为我们删除了一个黑色节点，所以这种情况该路线不会平衡，我们就需要对父节点进行递归操作处理，重新判断各种情况。</p>
+<p>2.3.它兄弟只有一个红色左孩子</p>
+<p>​        红色节点不会影响红黑树的性质。从下图看出，父亲结点被拖去左边抵儿子的债了。<br><img src="http://cdn.lehanbal.top/%E5%88%A0%E9%99%A4%E7%BB%93%E7%82%B9%E6%83%85%E5%86%B52.3.png" alt="删除结点情况2.3"></p>
+<p>2.4.它兄弟只有一个红色右孩子</p>
+<p>​        和2.3的情况十分相似，都是子债父偿，但是2.3情况下当家作主的是侄子结点，在2.4情况下它兄弟当家做主了。</p>
+<p><img src="http://cdn.lehanbal.top/%E5%88%A0%E9%99%A4%E7%BB%93%E7%82%B9%E6%83%85%E5%86%B52.4.png" alt="删除结点情况2.4"></p>
+</li>
+<li><p>待删除的结点是黑色，兄弟结点是红色（该情况下红色肯定是带着两个红色孩子，不然树不会平衡）<br><img src="http://cdn.lehanbal.top/%E5%88%A0%E9%99%A4%E7%BB%93%E7%82%B9%E6%83%85%E5%86%B53.png" alt="删除结点情况3"></p>
+</li>
+</ol>
+<p>这就是全部的红黑树删除情况，剩下的右情况镜像处理即可。</p>
+<h2 id="灵魂拷问"><a href="#灵魂拷问" class="headerlink" title="灵魂拷问"></a>灵魂拷问</h2><h3 id="jdk-1-8-HashMap-中有使用到红黑树，你知道触发条件是什么吗？有读过源码是如何-put-和-remove-的吗？"><a href="#jdk-1-8-HashMap-中有使用到红黑树，你知道触发条件是什么吗？有读过源码是如何-put-和-remove-的吗？" class="headerlink" title="jdk 1.8 HashMap 中有使用到红黑树，你知道触发条件是什么吗？有读过源码是如何 put 和 remove 的吗？"></a>jdk 1.8 HashMap 中有使用到红黑树，你知道触发条件是什么吗？有读过源码是如何 put 和 remove 的吗？</h3><p>红黑树插入为O(lgn),查询为O(lgn)，链表插入为O(1)，查询为O(n)。个数少时，插入删除成本高，用链表；个数多时，查询成本高，用红黑树。需要定一个值，比这个值大就转红黑树，比这个值小就转链表，而且要避免频繁的转换。根据泊松分布，在负载因子0.75（HashMap默认）的情况下，单个hash槽内元素个数为8的概率小于百万分之一，将7作为一个分水岭，等于7时不做转换，大于等于8才转红黑树，小于等于6才转链表。</p>
+<p>触发转化的两个条件是：一个是链表的长度达到8个，一个是数组的长度达到64个。</p>
+<p>put源码</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> V <span class="title">put</span><span class="params">(K key, V value)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> putVal(hash(key), key, value, <span class="keyword">false</span>, <span class="keyword">true</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>putVal源码</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">final</span> V <span class="title">putVal</span><span class="params">(<span class="keyword">int</span> hash, K key, V value, <span class="keyword">boolean</span> onlyIfAbsent,</span></span></span><br><span class="line"><span class="function"><span class="params">               <span class="keyword">boolean</span> evict)</span> </span>&#123;</span><br><span class="line">    Node&lt;K,V&gt;[] tab; Node&lt;K,V&gt; p; <span class="keyword">int</span> n, i;<span class="comment">//定义一个临时链表数组，对hashmap中的table进行操作，n是table的长度，为hashmap初始化时定义的值，是2的幂，i为tab的游标</span></span><br><span class="line">    <span class="keyword">if</span> ((tab = table) == <span class="keyword">null</span> || (n = tab.length) == <span class="number">0</span>)<span class="comment">//如果这个hashmap是空的</span></span><br><span class="line">        n = (tab = resize()).length;<span class="comment">//就resize一下这个hashmap，获取容量（16）</span></span><br><span class="line">    <span class="keyword">if</span> ((p = tab[i = (n - <span class="number">1</span>) &amp; hash]) == <span class="keyword">null</span>)<span class="comment">//这行代码的意思是获取tab链表数组中的第length个链表，如果链表为空，就创建新节点添加进去，它的nextnode为null</span></span><br><span class="line">        tab[i] = newNode(hash, key, value, <span class="keyword">null</span>);</span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">        Node&lt;K,V&gt; e; K k;</span><br><span class="line">        <span class="keyword">if</span> (p.hash == hash &amp;&amp;</span><br><span class="line">            ((k = p.key) == key || (key != <span class="keyword">null</span> &amp;&amp; key.equals(k))))<span class="comment">//如果hash相同，键相同，就直接把p指向e</span></span><br><span class="line">            e = p;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (p <span class="keyword">instanceof</span> TreeNode)<span class="comment">//如果已经是红黑树了就执行红黑树的添加操作</span></span><br><span class="line">            e = ((TreeNode&lt;K,V&gt;)p).putTreeVal(<span class="keyword">this</span>, tab, hash, key, value);</span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> binCount = <span class="number">0</span>; ; ++binCount) &#123;<span class="comment">//链表数组中如果不出现hash碰撞，最完美的情况应该是每个链表都是单结点，这里统计链表中节点的个数</span></span><br><span class="line">                <span class="keyword">if</span> ((e = p.next) == <span class="keyword">null</span>) &#123;</span><br><span class="line">                    p.next = newNode(hash, key, value, <span class="keyword">null</span>);</span><br><span class="line">                    <span class="comment">//TREEIFY_THRESHOLD = 8；判断当前链表长度，如果大于8就把链表转化为红黑树</span></span><br><span class="line">                    <span class="keyword">if</span> (binCount &gt;= TREEIFY_THRESHOLD - <span class="number">1</span>) <span class="comment">// -1 for 1st</span></span><br><span class="line">                        treeifyBin(tab, hash);<span class="comment">//把这个链表转化成红黑树，然后直接退出循环</span></span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">if</span> (e.hash == hash &amp;&amp;</span><br><span class="line">                    ((k = e.key) == key || (key != <span class="keyword">null</span> &amp;&amp; key.equals(k))))<span class="comment">//在结点遍历的过程中，如果有hash值相同的情况，且key值相同，就直接退出循环，把这个找到的结点直接赋值</span></span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                p = e;<span class="comment">//每次都指向下一个结点</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (e != <span class="keyword">null</span>) &#123; <span class="comment">// existing mapping for key</span></span><br><span class="line">            V oldValue = e.value;</span><br><span class="line">            <span class="keyword">if</span> (!onlyIfAbsent || oldValue == <span class="keyword">null</span>)<span class="comment">//根据参数onlyIfAbsent决定是否覆盖</span></span><br><span class="line">                e.value = value;</span><br><span class="line">            afterNodeAccess(e);</span><br><span class="line">            <span class="keyword">return</span> oldValue;返回的是e.value的指向</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    ++modCount;<span class="comment">//操作数+1</span></span><br><span class="line">    <span class="keyword">if</span> (++size &gt; threshold)<span class="comment">//如果链表数组大小大于了阈值，就扩容</span></span><br><span class="line">        resize();</span><br><span class="line">    afterNodeInsertion(evict);</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>通过hash计算要填记得key准备插入的位置，如果key一样就看参数是否决定覆盖，如果是空的就执行插入方法，如果对应的位置有值就判断是红黑树结构还是链表结构，如果是链表结构的话就顺着链表寻找，找到一样的key就跟参数选择覆盖，没找到的话就放在链表的最后面，链表长度大于8的话就进行红黑树化，如果是红黑树结构就按照书的添加方式进行添加。</p>
+<p>treeifyBin源码</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">final</span> <span class="keyword">void</span> <span class="title">treeifyBin</span><span class="params">(Node&lt;K,V&gt;[] tab, <span class="keyword">int</span> hash)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> n, index; Node&lt;K,V&gt; e;</span><br><span class="line">    <span class="comment">//MIN_TREEIFY_CAPACITY = 64,这里是重点，如果table小于64，那么是走的扩容resize的方法，超过这个数字，才会走到else的TreeNode的构建</span></span><br><span class="line">    <span class="keyword">if</span> (tab == <span class="keyword">null</span> || (n = tab.length) &lt; MIN_TREEIFY_CAPACITY)</span><br><span class="line">        resize();</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> ((e = tab[index = (n - <span class="number">1</span>) &amp; hash]) != <span class="keyword">null</span>) &#123;</span><br><span class="line">        TreeNode&lt;K,V&gt; hd = <span class="keyword">null</span>, tl = <span class="keyword">null</span>;</span><br><span class="line">        <span class="keyword">do</span> &#123;</span><br><span class="line">            TreeNode&lt;K,V&gt; p = replacementTreeNode(e, <span class="keyword">null</span>);</span><br><span class="line">            <span class="keyword">if</span> (tl == <span class="keyword">null</span>)</span><br><span class="line">                hd = p;</span><br><span class="line">            <span class="keyword">else</span> &#123;</span><br><span class="line">                p.prev = tl;</span><br><span class="line">                tl.next = p;</span><br><span class="line">            &#125;</span><br><span class="line">            tl = p;</span><br><span class="line">        &#125; <span class="keyword">while</span> ((e = e.next) != <span class="keyword">null</span>);</span><br><span class="line">        <span class="keyword">if</span> ((tab[index] = hd) != <span class="keyword">null</span>)</span><br><span class="line">            hd.treeify(tab);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>remove源码</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> V <span class="title">remove</span><span class="params">(Object key)</span> </span>&#123;</span><br><span class="line">    Node&lt;K,V&gt; e;</span><br><span class="line">    <span class="keyword">return</span> (e = removeNode(hash(key), key, <span class="keyword">null</span>, <span class="keyword">false</span>, <span class="keyword">true</span>)) == <span class="keyword">null</span> ?</span><br><span class="line">        <span class="keyword">null</span> : e.value;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>removeNode源码</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">final</span> Node&lt;K,V&gt; <span class="title">removeNode</span><span class="params">(<span class="keyword">int</span> hash, Object key, Object value,</span></span></span><br><span class="line"><span class="function"><span class="params">                           <span class="keyword">boolean</span> matchValue, <span class="keyword">boolean</span> movable)</span> </span>&#123;</span><br><span class="line">    Node&lt;K,V&gt;[] tab; Node&lt;K,V&gt; p; <span class="keyword">int</span> n, index;<span class="comment">// 定义节点数组tab用于指向table、节点p、数组长度n、hash所映射的数组下标</span></span><br><span class="line">    <span class="keyword">if</span> ((tab = table) != <span class="keyword">null</span> &amp;&amp; (n = tab.length) &gt; <span class="number">0</span> &amp;&amp;</span><br><span class="line">        (p = tab[index = (n - <span class="number">1</span>) &amp; hash]) != <span class="keyword">null</span>) &#123;<span class="comment">// 节点数组在hash位置处的节点不为空,若为空则直接返回null(不存在可删除元素)</span></span><br><span class="line">        Node&lt;K,V&gt; node = <span class="keyword">null</span>, e; K k; V v;<span class="comment">// 定义局部节点变量node存储需要删除的元素、循环变量e、key、value</span></span><br><span class="line">        <span class="keyword">if</span> (p.hash == hash &amp;&amp;</span><br><span class="line">            ((k = p.key) == key || (key != <span class="keyword">null</span> &amp;&amp; key.equals(k))))<span class="comment">// 头结点即为需要删除的节点</span></span><br><span class="line">            node = p;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> ((e = p.next) != <span class="keyword">null</span>) &#123;<span class="comment">// 链表还存在其他元素,并将e指向头结点的后继元</span></span><br><span class="line">            <span class="keyword">if</span> (p <span class="keyword">instanceof</span> TreeNode)<span class="comment">// 该链表是一个红黑树结构</span></span><br><span class="line">                node = ((TreeNode&lt;K,V&gt;)p).getTreeNode(hash, key);<span class="comment">// 在红黑树中查询指定hash、key的节点并返回</span></span><br><span class="line">            <span class="keyword">else</span> &#123;<span class="comment">// 链表是一个单项链表</span></span><br><span class="line">                <span class="keyword">do</span> &#123;</span><br><span class="line">                    <span class="keyword">if</span> (e.hash == hash &amp;&amp;</span><br><span class="line">                        ((k = e.key) == key ||</span><br><span class="line">                         (key != <span class="keyword">null</span> &amp;&amp; key.equals(k)))) &#123;</span><br><span class="line">                        node = e;<span class="comment">// 节点e时需要移除的节点,结束循环</span></span><br><span class="line">                        <span class="keyword">break</span>;</span><br><span class="line">                    &#125;</span><br><span class="line">                    p = e;<span class="comment">// 循环结束时,节点p为目标节点的前驱元</span></span><br><span class="line">                &#125; <span class="keyword">while</span> ((e = e.next) != <span class="keyword">null</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (node != <span class="keyword">null</span> &amp;&amp; (!matchValue || (v = node.value) == value ||</span><br><span class="line">                             (value != <span class="keyword">null</span> &amp;&amp; value.equals(v)))) &#123;<span class="comment">// 存在需要移除的节点且值匹配删除为false或者不为false且值匹配</span></span><br><span class="line">            <span class="keyword">if</span> (node <span class="keyword">instanceof</span> TreeNode)<span class="comment">// node为树形节点,使用treeNode的移除方法</span></span><br><span class="line">                ((TreeNode&lt;K,V&gt;)node).removeTreeNode(<span class="keyword">this</span>, tab, movable);</span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span> (node == p)<span class="comment">// 若node为头结点,直接将node 的后继元作为新的头结点</span></span><br><span class="line">                tab[index] = node.next;</span><br><span class="line">            <span class="keyword">else</span></span><br><span class="line">                p.next = node.next;<span class="comment">// 链表下移除节点且不为头结点,此时将目标节点的前驱元的后继元指向目标节点的后继元</span></span><br><span class="line">            ++modCount;</span><br><span class="line">            --size;</span><br><span class="line">            afterNodeRemoval(node);</span><br><span class="line">            <span class="keyword">return</span> node;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>下面是红黑树退成链表的源码，不解读了，在hashMap中的元素小于6的时候会从红黑树退成链表，选择6是为了防止在刚刚转化成红黑树后出现频繁地增加与删除操作导致查询效率低下，所以中间设置缓冲。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">final</span> <span class="keyword">void</span> <span class="title">removeTreeNode</span><span class="params">(HashMap&lt;K,V&gt; map, Node&lt;K,V&gt;[] tab,</span></span></span><br><span class="line"><span class="function"><span class="params">                          <span class="keyword">boolean</span> movable)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> n;</span><br><span class="line">    <span class="keyword">if</span> (tab == <span class="keyword">null</span> || (n = tab.length) == <span class="number">0</span>)</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    <span class="keyword">int</span> index = (n - <span class="number">1</span>) &amp; hash;</span><br><span class="line">    TreeNode&lt;K,V&gt; first = (TreeNode&lt;K,V&gt;)tab[index], root = first, rl;</span><br><span class="line">    TreeNode&lt;K,V&gt; succ = (TreeNode&lt;K,V&gt;)next, pred = prev;</span><br><span class="line">    <span class="keyword">if</span> (pred == <span class="keyword">null</span>)</span><br><span class="line">        tab[index] = first = succ;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        pred.next = succ;</span><br><span class="line">    <span class="keyword">if</span> (succ != <span class="keyword">null</span>)</span><br><span class="line">        succ.prev = pred;</span><br><span class="line">    <span class="keyword">if</span> (first == <span class="keyword">null</span>)</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    <span class="keyword">if</span> (root.parent != <span class="keyword">null</span>)</span><br><span class="line">        root = root.root();</span><br><span class="line">    <span class="keyword">if</span> (root == <span class="keyword">null</span></span><br><span class="line">        || (movable</span><br><span class="line">            &amp;&amp; (root.right == <span class="keyword">null</span></span><br><span class="line">                || (rl = root.left) == <span class="keyword">null</span></span><br><span class="line">                || rl.left == <span class="keyword">null</span>))) &#123;</span><br><span class="line">        tab[index] = first.untreeify(map);  <span class="comment">// too small</span></span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    TreeNode&lt;K,V&gt; p = <span class="keyword">this</span>, pl = left, pr = right, replacement;</span><br><span class="line">    <span class="keyword">if</span> (pl != <span class="keyword">null</span> &amp;&amp; pr != <span class="keyword">null</span>) &#123;</span><br><span class="line">        TreeNode&lt;K,V&gt; s = pr, sl;</span><br><span class="line">        <span class="keyword">while</span> ((sl = s.left) != <span class="keyword">null</span>) <span class="comment">// find successor</span></span><br><span class="line">            s = sl;</span><br><span class="line">        <span class="keyword">boolean</span> c = s.red; s.red = p.red; p.red = c; <span class="comment">// swap colors</span></span><br><span class="line">        TreeNode&lt;K,V&gt; sr = s.right;</span><br><span class="line">        TreeNode&lt;K,V&gt; pp = p.parent;</span><br><span class="line">        <span class="keyword">if</span> (s == pr) &#123; <span class="comment">// p was s&#x27;s direct parent</span></span><br><span class="line">            p.parent = s;</span><br><span class="line">            s.right = p;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">            TreeNode&lt;K,V&gt; sp = s.parent;</span><br><span class="line">            <span class="keyword">if</span> ((p.parent = sp) != <span class="keyword">null</span>) &#123;</span><br><span class="line">                <span class="keyword">if</span> (s == sp.left)</span><br><span class="line">                    sp.left = p;</span><br><span class="line">                <span class="keyword">else</span></span><br><span class="line">                    sp.right = p;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> ((s.right = pr) != <span class="keyword">null</span>)</span><br><span class="line">                pr.parent = s;</span><br><span class="line">        &#125;</span><br><span class="line">        p.left = <span class="keyword">null</span>;</span><br><span class="line">        <span class="keyword">if</span> ((p.right = sr) != <span class="keyword">null</span>)</span><br><span class="line">            sr.parent = p;</span><br><span class="line">        <span class="keyword">if</span> ((s.left = pl) != <span class="keyword">null</span>)</span><br><span class="line">            pl.parent = s;</span><br><span class="line">        <span class="keyword">if</span> ((s.parent = pp) == <span class="keyword">null</span>)</span><br><span class="line">            root = s;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (p == pp.left)</span><br><span class="line">            pp.left = s;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">            pp.right = s;</span><br><span class="line">        <span class="keyword">if</span> (sr != <span class="keyword">null</span>)</span><br><span class="line">            replacement = sr;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">            replacement = p;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (pl != <span class="keyword">null</span>)</span><br><span class="line">        replacement = pl;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (pr != <span class="keyword">null</span>)</span><br><span class="line">        replacement = pr;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        replacement = p;</span><br><span class="line">    <span class="keyword">if</span> (replacement != p) &#123;</span><br><span class="line">        TreeNode&lt;K,V&gt; pp = replacement.parent = p.parent;</span><br><span class="line">        <span class="keyword">if</span> (pp == <span class="keyword">null</span>)</span><br><span class="line">            (root = replacement).red = <span class="keyword">false</span>;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (p == pp.left)</span><br><span class="line">            pp.left = replacement;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">            pp.right = replacement;</span><br><span class="line">        p.left = p.right = p.parent = <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    TreeNode&lt;K,V&gt; r = p.red ? root : balanceDeletion(root, replacement);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (replacement == p) &#123;  <span class="comment">// detach</span></span><br><span class="line">        TreeNode&lt;K,V&gt; pp = p.parent;</span><br><span class="line">        p.parent = <span class="keyword">null</span>;</span><br><span class="line">        <span class="keyword">if</span> (pp != <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">if</span> (p == pp.left)</span><br><span class="line">                pp.left = <span class="keyword">null</span>;</span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span> (p == pp.right)</span><br><span class="line">                pp.right = <span class="keyword">null</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (movable)</span><br><span class="line">        moveRootToFront(tab, r);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="哪些场景可以应用红黑树？"><a href="#哪些场景可以应用红黑树？" class="headerlink" title="哪些场景可以应用红黑树？"></a>哪些场景可以应用红黑树？</h3><p>map和set都是用红黑树实现的。它可以在O(log n)时间内做查找，插入和删除等操作。</p>
+<p>著名的linux进程调度<strong>Completely Fair Scheduler</strong>,用红黑树管理<strong>进程控制块。</strong></p>
+<p><strong>epoll</strong>在内核中的实现，用红黑树管理事件块</p>
+<p><strong>nginx</strong>中，用红黑树管理timer等</p>
+<p>Java的<strong>TreeMap</strong>实现</p>
+<h3 id="你了解各种树的时间复杂度吗？"><a href="#你了解各种树的时间复杂度吗？" class="headerlink" title="你了解各种树的时间复杂度吗？"></a>你了解各种树的时间复杂度吗？</h3><p><strong>二叉树</strong>：</p>
+<p>​        查找时间复杂度：最好：<img src="https://math.jianshu.com/math?formula=O(lgn)" alt="O(lgn)">,最差<img src="https://math.jianshu.com/math?formula=O(n)" alt="O(n)">。最差情况是所有的数据全部在一端时。</p>
+<p><strong>二叉搜索树（二叉排序树、二叉查找树）：</strong></p>
+<p>​        查找时间复杂度：最好：<img src="https://math.jianshu.com/math?formula=O(lgn)" alt="O(lgn)">,最差<img src="https://math.jianshu.com/math?formula=O(n)" alt="O(n)">。最差情况是所有的数据全部在一端时。</p>
+<p><strong>平衡二叉树：</strong></p>
+<p>​        查找时间复杂度：<img src="https://math.jianshu.com/math?formula=O(lgn)" alt="O(lgn)"></p>
+<p><strong>红黑树：</strong></p>
+<p>​        查找删除插入时间复杂度：<img src="https://math.jianshu.com/math?formula=O(lgn)" alt="O(lgn)"></p>
+<p><strong>B-树、B+树</strong></p>
+<p>​        查找时间复杂度：<img src="https://math.jianshu.com/math?formula=O(lgn)" alt="O(lgn)"></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag"># 数据结构</a>
+              <a href="/tags/%E7%BA%A2%E9%BB%91%E6%A0%91/" rel="tag"># 红黑树</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2020/10/29/KMP%E7%AE%97%E6%B3%95/" rel="prev" title="KMP算法">
+                  <i class="fa fa-chevron-left"></i> KMP算法
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2020/10/29/%E8%B0%88%E8%B0%88Deque/" rel="next" title="谈谈Deque">
+                  谈谈Deque <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">lehanbal</span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://unpkg.com/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="https://unpkg.com/hexo-generator-searchdb@1.4.0/dist/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+  <script src="/js/third-party/pace.js"></script>
+
+  
+
+
+
+
+
+</body>
+</html>

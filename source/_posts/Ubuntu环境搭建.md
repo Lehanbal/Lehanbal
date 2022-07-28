@@ -16,7 +16,7 @@ date: 2022-07-26 00:16:00
 
 位置在
 
-` /etc/apt/source.list` 
+` /etc/apt/sources.list` 
 
 更改好源之后需要执行命令更新源内容
 
@@ -27,73 +27,73 @@ date: 2022-07-26 00:16:00
 ## aliyun
 
 ```bash
-deb http://mirrors.aliyun.com/ubuntu/ focal main restricted universe multiverse
-deb http://mirrors.aliyun.com/ubuntu/ focal-security main restricted universe multiverse
-deb http://mirrors.aliyun.com/ubuntu/ focal-updates main restricted universe multiverse
-deb http://mirrors.aliyun.com/ubuntu/ focal-backports main restricted universe multiverse
+deb http://mirrors.aliyun.com/ubuntu/ jammy main restricted universe multiverse
+deb http://mirrors.aliyun.com/ubuntu/ jammy-security main restricted universe multiverse
+deb http://mirrors.aliyun.com/ubuntu/ jammy-updates main restricted universe multiverse
+deb http://mirrors.aliyun.com/ubuntu/ jammy-backports main restricted universe multiverse
 
-# deb-src http://mirrors.aliyun.com/ubuntu/ focal main restricted universe multiverse
-# deb-src http://mirrors.aliyun.com/ubuntu/ focal-security main restricted universe multiverse
-# deb-src http://mirrors.aliyun.com/ubuntu/ focal-updates main restricted universe multiverse
-# deb-src http://mirrors.aliyun.com/ubuntu/ focal-backports main restricted universe multiverse
+# deb-src http://mirrors.aliyun.com/ubuntu/ jammy main restricted universe multiverse
+# deb-src http://mirrors.aliyun.com/ubuntu/ jammy-security main restricted universe multiverse
+# deb-src http://mirrors.aliyun.com/ubuntu/ jammy-updates main restricted universe multiverse
+# deb-src http://mirrors.aliyun.com/ubuntu/ jammy-backports main restricted universe multiverse
 
 ## Pre-released source, not recommended.
-# deb http://mirrors.aliyun.com/ubuntu/ focal-proposed main restricted universe multiverse
-# deb-src http://mirrors.aliyun.com/ubuntu/ focal-proposed main restricted universe multiverse
+# deb http://mirrors.aliyun.com/ubuntu/ jammy-proposed main restricted universe multiverse
+# deb-src http://mirrors.aliyun.com/ubuntu/ jammy-proposed main restricted universe multiverse
 ```
 
 ## 清华源
 
 ```bash
-deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ focal main restricted universe multiverse
-deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ focal-updates main restricted universe multiverse
-deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ focal-backports main restricted universe multiverse
-deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ focal-security main restricted universe multiverse
+deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ jammy main restricted universe multiverse
+deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ jammy-updates main restricted universe multiverse
+deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ jammy-backports main restricted universe multiverse
+deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ jammy-security main restricted universe multiverse
 
-# deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ focal main restricted universe multiverse
-# deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ focal-updates main restricted universe multiverse
-# deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ focal-backports main restricted universe multiverse
-# deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ focal-security main restricted universe multiverse
+# deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ jammy main restricted universe multiverse
+# deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ jammy-updates main restricted universe multiverse
+# deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ jammy-backports main restricted universe multiverse
+# deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ jammy-security main restricted universe multiverse
 
 ## Pre-released source, not recommended.
-# deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ focal-proposed main restricted universe multiverse
-# deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ focal-proposed main restricted universe multiverse
+# deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ jammy-proposed main restricted universe multiverse
+# deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ jammy-proposed main restricted universe multiverse
 ```
 
 ## 中科大
 
 ```bash
-deb https://mirrors.ustc.edu.cn/ubuntu/ focal main restricted universe multiverse
-deb https://mirrors.ustc.edu.cn/ubuntu/ focal-updates main restricted universe multiverse
-deb https://mirrors.ustc.edu.cn/ubuntu/ focal-backports main restricted universe multiverse
-deb https://mirrors.ustc.edu.cn/ubuntu/ focal-security main restricted universe multiverse
+deb https://mirrors.ustc.edu.cn/ubuntu/ jammy main restricted universe multiverse
+deb https://mirrors.ustc.edu.cn/ubuntu/ jammy-updates main restricted universe multiverse
+deb https://mirrors.ustc.edu.cn/ubuntu/ jammy-backports main restricted universe multiverse
+deb https://mirrors.ustc.edu.cn/ubuntu/ jammy-security main restricted universe multiverse
 
-# deb-src https://mirrors.ustc.edu.cn/ubuntu/ focal main restricted universe multiverse
-# deb-src https://mirrors.ustc.edu.cn/ubuntu/ focal-updates main restricted universe multiverse
-# deb-src https://mirrors.ustc.edu.cn/ubuntu/ focal-backports main restricted universe multiverse
-# deb-src https://mirrors.ustc.edu.cn/ubuntu/ focal-security main restricted universe multiverse
+# deb-src https://mirrors.ustc.edu.cn/ubuntu/ jammy main restricted universe multiverse
+# deb-src https://mirrors.ustc.edu.cn/ubuntu/ jammy-updates main restricted universe multiverse
+# deb-src https://mirrors.ustc.edu.cn/ubuntu/ jammy-backports main restricted universe multiverse
+# deb-src https://mirrors.ustc.edu.cn/ubuntu/ jammy-security main restricted universe multiverse
 
 ## Pre-released source, not recommended.
-# deb https://mirrors.ustc.edu.cn/ubuntu/ focal-proposed main restricted universe multiverse
-# deb-src https://mirrors.ustc.edu.cn/ubuntu/ focal-proposed main restricted universe multiverse
+# deb https://mirrors.ustc.edu.cn/ubuntu/ jammy-proposed main restricted universe multiverse
+# deb-src https://mirrors.ustc.edu.cn/ubuntu/ jammy-proposed main restricted universe multiverse
 ```
 
 ## 网易163
 
 ```bash
-deb http://mirrors.163.com/ubuntu/ focal main restricted universe multiverse
-deb http://mirrors.163.com/ubuntu/ focal-security main restricted universe multiverse
-deb http://mirrors.163.com/ubuntu/ focal-updates main restricted universe multiverse
-deb http://mirrors.163.com/ubuntu/ focal-backports main restricted universe multiverse
+deb http://mirrors.163.com/ubuntu/ jammy main restricted universe multiverse
+deb http://mirrors.163.com/ubuntu/ jammy-security main restricted universe multiverse
+deb http://mirrors.163.com/ubuntu/ jammy-updates main restricted universe multiverse
+deb http://mirrors.163.com/ubuntu/ jammy-backports main restricted universe multiverse
 
-# deb-src http://mirrors.163.com/ubuntu/ focal main restricted universe multiverse
-# deb-src http://mirrors.163.com/ubuntu/ focal-security main restricted universe multiverse
-# deb-src http://mirrors.163.com/ubuntu/ focal-updates main restricted universe multiverse
-# deb-src http://mirrors.163.com/ubuntu/ focal-backports main restricted universe multiverse
+# deb-src http://mirrors.163.com/ubuntu/ jammy main restricted universe multiverse
+# deb-src http://mirrors.163.com/ubuntu/ jammy-security main restricted universe multiverse
+# deb-src http://mirrors.163.com/ubuntu/ jammy-updates main restricted universe multiverse
+# deb-src http://mirrors.163.com/ubuntu/ jammy-backports main restricted universe multiverse
 
 ## Pre-released source, not recommended.
-# deb http://mirrors.163.com/ubuntu/ focal-proposed main restricted universe multiverse
-# deb-src http://mirrors.163.com/ubuntu/ focal-proposed main restricted universe multiverse
+# deb http://mirrors.163.com/ubuntu/ jammy-proposed main restricted universe multiverse
+# deb-src http://mirrors.163.com/ubuntu/ jammy-proposed main restricted universe multiverse
 ```
 
 # 配置GIT
@@ -101,9 +101,8 @@ deb http://mirrors.163.com/ubuntu/ focal-backports main restricted universe mult
 ## 基础配置信息
 
 ```bash
-# 请不要使用global参数
-$ git config user.name “username”
-$ git config user.email “useremail”
+$ git config --global user.name “username”
+$ git config --global user.email “useremail”
 ```
 
 ## 生成ssh key
@@ -138,7 +137,7 @@ ssh-add ~/.ssh/id_rsa
 
 2. 主题安装
 
-   vim ~/.vim/monokai.vim
+   vim ~/.vim/colors/monokai.vim
 
    ```bash
    " Vim color file

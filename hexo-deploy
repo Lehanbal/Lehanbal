@@ -1,2 +1,5 @@
 #!/bin/zsh
+git add .
+git commit -m "add new article"
+git push origin source-code
 hexo g -d

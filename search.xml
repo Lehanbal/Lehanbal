@@ -6,7 +6,7 @@
     <content><![CDATA[<h1 id="ubuntu环境搭建"><a href="#ubuntu环境搭建" class="headerlink" title="ubuntu环境搭建"></a>ubuntu环境搭建</h1><ol>
 <li>在<a href="https://releases.ubuntu.com/">Ubuntu Releases</a>中选择想要的版本，我选择了22.04的server版本，不需要图形界面。</li>
 <li>刻录启动盘，推荐使用ventoy。</li>
-<li>进入服务器引导启动安装系统</li>
+<li>进入服务器引导启动安装系统。</li>
 </ol>
 <h1 id="镜像源"><a href="#镜像源" class="headerlink" title="镜像源"></a>镜像源</h1><p>位置在</p>
 <p><code> /etc/apt/sources.list</code> </p>

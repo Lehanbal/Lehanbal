@@ -253,6 +253,8 @@ ssh-add ~/.ssh/id_rsa
    ```bash
    curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
    ```
+   
+   这一步可能会有遇到443报错，遇到dns污染，可以同通过 https://ipaddress.com （该网站应该是需要翻墙，如果不便可以找其他查询dns解析服务的网址）去解析 raw.githubusercontent.com 的真正ip是多少，然后在/etc/hosts中以"IP 域名"的方式添加 
 
 4. 配置vimrc
 
@@ -311,7 +313,7 @@ ssh-add ~/.ssh/id_rsa
 
 先安装lua
 
-`apt install lua5.3`
+`sudo apt install lua5.3`
 
 之后再zshrc中配置该命令
 
@@ -385,7 +387,13 @@ PasswordAuthentication yes
    PROMPT=${PROMPT/\%c/\%~}
    ```
 
-3. 安装插件
+3. 配置安装提示
+
+   ```bash
+   echo `source /etc/zsh_command_not_found` > $ZSH_CUSTOM/command_not_found.zsh
+   ```
+
+4. 安装插件
 
    1. zsh-autosuggestions
 
@@ -490,12 +498,11 @@ plugins=(
 	git
 	zsh-autosuggestions	
 	zsh-syntax-highlighting
+   zsh-completions
 	extract
 )
 
 eval "$(lua /home/lehanbal/z.lua/z.lua  --init zsh once enhanced fzf)"    # ZSH 初始化
-
-fpath+=${ZSH_CUSTOM:-${ZSH:-~/.oh-my-zsh}/custom}/plugins/zsh-completions/src
 
 source $ZSH/oh-my-zsh.sh
 
